@@ -1,0 +1,10 @@
+# Large binary files
+*.pdf
+
+# Office files (not needed for the web demo)
+*.docx
+*.pptx
+
+# OS files
+Thumbs.db
+.DS_Store

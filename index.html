@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE WAY - Impact Dashboard Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8faf9 0%, #eef2f0 50%, #f0f4f8 100%);
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .property-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .progress-fill {
+            transition: width 1.5s ease-in-out;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse-green {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+            }
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        @keyframes urgentPulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        .view-enter {
+            animation: fadeSlideIn 0.5s ease-out both;
+        }
+
+        .pulse-dot {
+            animation: pulse-green 2s infinite;
+        }
+
+        .terminal-cursor {
+            animation: blink 1s step-end infinite;
+        }
+
+        .urgent-badge {
+            animation: urgentPulse 1.5s ease-in-out infinite;
+        }
+
+        .btn-hover {
+            transition: all 0.25s ease;
+        }
+
+        .btn-hover:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-hover:active {
+            transform: scale(0.97);
+        }
+
+        .card-premium {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(229, 231, 235, 0.8);
+        }
+
+        .card-premium:hover {
+            border-color: rgba(16, 185, 129, 0.3);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar-desktop {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar-desktop.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0 !important;
+            }
+
+            .hamburger {
+                display: flex !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-900">
+    <div id="root"></div>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- Icons Component Wrapper ---
+        const Icon = ({ name, size = 20, className = "" }) => {
+            return <i data-lucide={name} style={{ width: size, height: size }} class={className}></i>;
+        };
+
+        // --- Mock Data ---
+        const PROPERTIES = [
+            { id: 1, name: "1 Toilet in Kampong Thom, Village B", location: "Cambodia", funded: 60, target: 3500, raised: 2100, badges: ["✨急需支援", "🏫 學校項目"], img: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=800" },
+            { id: 2, name: "Family Latrine in Kampong Chhnang", location: "Cambodia", funded: 85, target: 1200, raised: 1020, badges: ["🤝 拼團中"], img: "https://images.unsplash.com/photo-1542601906990-b4d3fb75bb44?auto=format&fit=crop&q=80&w=800" },
+            { id: 3, name: "School Toilet Block in Siem Reap", location: "Cambodia", funded: 35, target: 5000, raised: 1750, badges: ["✨急需支援", "🏫 學校項目", "🆕 新項目"], img: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=800" }
+        ];
+
+        const TEAMUPS = [
+            { id: 1, title: "Village B 廁所拼團", members: 3, target: 5, raised: 2100, goal: 3500, daysLeft: 12, img: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=400" },
+            { id: 2, title: "Siem Reap 學校廁所", members: 7, target: 10, raised: 3800, goal: 5000, daysLeft: 5, img: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=400" },
+            { id: 3, title: "Battambang 社區計劃", members: 2, target: 8, raised: 600, goal: 4200, daysLeft: 21, img: "https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&q=80&w=400" },
+        ];
+
+        const BADGES = [
+            { id: 1, name: "引路人", icon: "compass", unlocked: true, date: "2025-06-15", desc: "完成首次捐款" },
+            { id: 2, name: "守望者", icon: "eye", unlocked: true, date: "2025-12-01", desc: "持續供廁 6 個月" },
+            { id: 3, name: "建築師", icon: "home", unlocked: true, date: "2026-01-15", desc: "成功建造一座廁所" },
+            { id: 4, name: "傳播者", icon: "share-2", unlocked: false, date: null, desc: "分享故事 10 次" },
+            { id: 5, name: "領袖", icon: "users", unlocked: false, date: null, desc: "邀請 5 位朋友加入" },
+            { id: 6, name: "守護神", icon: "shield", unlocked: false, date: null, desc: "建造 3 座廁所" },
+        ];
+
+        const TRANSACTIONS = [
+            { id: 1, date: "2026-02-15", type: "donation", amount: 500, desc: "Village B 廁所 月供", status: "completed" },
+            { id: 2, date: "2026-01-15", type: "donation", amount: 500, desc: "Village B 廁所 月供", status: "completed" },
+            { id: 3, date: "2025-12-15", type: "donation", amount: 500, desc: "Village B 廁所 月供", status: "completed" },
+            { id: 4, date: "2025-11-15", type: "donation", amount: 100, desc: "Siem Reap 拼團", status: "completed" },
+            { id: 5, date: "2025-06-15", type: "donation", amount: 500, desc: "Village B 首次捐款", status: "completed" },
+        ];
+
+        // --- Components ---
+
+        const Sidebar = ({ activeTab, setActiveTab }) => (
+            <div class="fixed left-0 top-0 h-screen w-64 bg-white border-r border-gray-100 p-6 flex flex-col z-50">
+                <div class="mb-10 flex items-center gap-2">
+                    <div class="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-emerald-100">W</div>
+                    <span class="font-bold text-xl tracking-tight text-gray-900 uppercase">The Way</span>
+                </div>
+                <nav class="flex-1 space-y-1">
+                    {[
+                        { id: 'explore', label: '待建項目', icon: 'search' },
+                        { id: 'portfolio', label: '我的物業', icon: 'pie-chart' },
+                        { id: 'teamup', label: '拼團大廳', icon: 'users' },
+                        { id: 'rewards', label: '業主福利', icon: 'award' },
+                        { id: 'wallet', label: '我的錢包', icon: 'wallet' },
+                    ].map(item => (
+                        <button
+                            key={item.id}
+                            onClick={() => setActiveTab(item.id)}
+                            class={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 ${activeTab === item.id ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-100 font-semibold scale-105' : 'text-gray-500 hover:bg-gray-50'}`}
+                        >
+                            <Icon name={item.icon} size={18} />
+                            {item.label}
+                        </button>
+                    ))}
+                </nav>
+                <div class="mt-auto pt-6 border-t border-gray-100">
+                    <div class="bg-gray-50 rounded-2xl p-4 mb-6 text-left">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest">The Promise Chapter</p>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs font-bold text-emerald-600">章節 2: 守望者</span>
+                            <span class="text-[10px] text-gray-400">8/12 個月</span>
+                        </div>
+                        <div class="w-full h-1 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-emerald-500" style={{ width: '66.6%' }}></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 px-2">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-blue-400 ring-2 ring-white shadow-md"></div>
+                        <div class="text-left">
+                            <p class="text-sm font-bold text-gray-900">Jason Cheung</p>
+                            <p class="text-[10px] text-emerald-500 font-bold uppercase">Premium Owner</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const ShareModal = ({ isOpen, onClose, property }) => {
+            if (!isOpen) return null;
+            return (
+                <div class="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
+                    <div class="relative w-full max-w-sm">
+                        <button onClick={onClose} class="absolute -top-12 right-0 text-white flex items-center gap-2 font-bold">
+                            <Icon name="x" /> 關閉預覽
+                        </button>
+                        {/* IG Story Mockup */}
+                        <div class="bg-gradient-to-b from-gray-900 via-emerald-900 to-black rounded-[40px] aspect-[9/16] overflow-hidden shadow-2xl border-4 border-gray-800 p-8 flex flex-col relative">
+                            <div class="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
+                                <img src={property?.img} class="w-full h-full object-cover grayscale" />
+                            </div>
+                            <div class="relative z-10 flex-1 flex flex-col">
+                                <div class="flex items-center gap-3 mb-10">
+                                    <div class="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center text-white font-bold text-xl">W</div>
+                                    <span class="text-white font-bold tracking-widest text-sm uppercase">The Way Impact</span>
+                                </div>
+
+                                <h2 class="text-3xl font-bold text-white leading-tight mb-6">
+                                    我喺柬埔寨<br />做咗業主！🏗️
+                                </h2>
+
+                                <div class="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-3xl mb-auto">
+                                    <p class="text-emerald-400 mono text-xs mb-2 tracking-widest uppercase italic text-left">Investment Report</p>
+                                    <p class="text-white text-lg font-bold mb-4 text-left">成功將一個女仔去廁所嘅路縮短咗 <span class="text-emerald-400">490 米</span>。</p>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-black">JC</div>
+                                        <div class="text-[10px] text-gray-300 text-left">
+                                            <p class="font-bold">Jason Cheung</p>
+                                            <p>Certified Impact Owner #047</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-center mt-8">
+                                    <p class="text-emerald-400 font-bold mb-2">#TheWayHK</p>
+                                    <div class="inline-block bg-white px-6 py-2 rounded-full text-black font-bold text-xs shadow-xl">
+                                        長按識別我的“產權”
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex gap-4">
+                            <button class="flex-1 bg-white py-3 rounded-2xl font-bold text-sm shadow-xl">保存圖片</button>
+                            <button class="flex-1 bg-emerald-500 text-white py-3 rounded-2xl font-bold text-sm shadow-xl">分享至 Instagram</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const ExploreView = ({ onSelect }) => (
+            <div class="p-8 view-enter">
+                <header class="mb-8 text-left">
+                    <h1 class="text-3xl font-bold text-gray-900">待建項目大廳</h1>
+                    <p class="text-gray-500">瀏覽所有正在籌款中的村莊廁所項目，選擇您的下一份"房產投資"。</p>
+                </header>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {PROPERTIES.map(p => (
+                        <div key={p.id} class="property-card card-premium bg-white rounded-3xl overflow-hidden shadow-sm cursor-pointer group" onClick={() => onSelect(p)}>
+                            <div class="h-56 relative overflow-hidden text-left">
+                                <img src={p.img} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                <div class="absolute top-4 left-4 flex gap-2 flex-wrap">
+                                    {p.badges.map(b => (
+                                        <span class={`glass px-3 py-1 rounded-full text-xs font-bold text-gray-700 shadow-sm ${b.includes('急需') ? 'urgent-badge !bg-red-50/80 !text-red-600 !border-red-200' : ''}`}>{b}</span>
+                                    ))}
+                                </div>
+                                {p.funded < 50 && (
+                                    <div class="absolute bottom-4 right-4 bg-red-500/90 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider urgent-badge">
+                                        急需支援
+                                    </div>
+                                )}
+                            </div>
+                            <div class="p-6 text-left">
+                                <h3 class="text-lg font-bold mb-4">{p.name}</h3>
+                                <div class="mb-6">
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class={`font-bold ${p.funded < 50 ? 'text-red-500' : 'text-emerald-600'}`}>這條村距離有廁所還差... {100 - p.funded}%</span>
+                                    </div>
+                                    <div class="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden mb-2">
+                                        <div class="h-full rounded-full progress-fill" style={{ width: `${p.funded}%` }}></div>
+                                    </div>
+                                    <div class="text-[11px] text-gray-500 font-mono text-center py-1 mt-2">
+                                        已籌：HK${p.raised.toLocaleString()} / 目標：HK${p.target.toLocaleString()} / 剩餘：HK${(p.target - p.raised).toLocaleString()}
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center pt-4 border-t border-gray-50">
+                                    <div class="flex items-center gap-1">
+                                        <div class="flex -space-x-2">
+                                            {[1, 2, 3].map(i => (
+                                                <div key={i} class="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-300 to-blue-300 border-2 border-white"></div>
+                                            ))}
+                                        </div>
+                                        <span class="text-[10px] text-gray-400 ml-1">預期受惠 4 人</span>
+                                    </div>
+                                    <button class="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2 rounded-xl text-sm font-bold shadow-lg shadow-emerald-200 btn-hover">
+                                        我要幫她縮短這條路
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+
+        const PortfolioView = ({ onShare }) => (
+            <div class="p-8 view-enter">
+                <header class="mb-10 flex justify-between items-end text-left">
+                    <div>
+                        <h1 class="text-4xl font-bold text-gray-900 mb-2">Hi Jason 👋</h1>
+                        <p class="text-gray-500 italic">你已成為廁所業主 8 個月，你的投資正在改變生命。</p>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-2xl flex items-center gap-2">
+                            <Icon name="award" className="text-emerald-600" size={16} />
+                            <span class="text-xs font-bold text-emerald-600 uppercase tracking-widest">引路人勳章 已解鎖</span>
+                        </div>
+                    </div>
+                </header>
+
+                {/* Stake-style summary cards */}
+                <div class="grid grid-cols-3 gap-6 mb-8">
+                    {[
+                        { label: '你建造的廁所', val: '1', unit: '個', icon: 'home', color: 'text-blue-500', bg: 'bg-blue-50' },
+                        { label: '受惠人數', val: '4', unit: '人', icon: 'users', color: 'text-rose-500', bg: 'bg-rose-50' },
+                        { label: '廁所運行天數', val: '247', unit: '天', icon: 'clock', color: 'text-emerald-500', bg: 'bg-emerald-50' },
+                    ].map(card => (
+                        <div class="card-premium bg-white p-8 rounded-[32px] shadow-sm text-left">
+                            <div class={`w-10 h-10 ${card.bg} rounded-2xl flex items-center justify-center mb-5 ${card.color}`}>
+                                <Icon name={card.icon} size={20} />
+                            </div>
+                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">{card.label}</span>
+                            <p class="text-4xl font-bold text-gray-900 leading-none mt-2">{card.val}<span class="text-lg text-gray-400 font-normal ml-1">{card.unit}</span></p>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Impact metrics — Stake flat card style */}
+                <div class="grid grid-cols-3 gap-6 mb-8">
+                    <div class="card-premium bg-white p-6 rounded-[28px] shadow-sm text-left">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">👧 Sophea (13歲) 出勤率</p>
+                        <p class="text-xs text-gray-400 mb-4 italic">捐款前 → 現在</p>
+                        <div class="flex items-end gap-3">
+                            <span class="text-3xl font-bold text-gray-300 line-through">63%</span>
+                            <span class="text-xl text-gray-300">→</span>
+                            <span class="text-4xl font-bold text-emerald-500">94%</span>
+                        </div>
+                        <div class="mt-3 inline-flex items-center gap-1 bg-emerald-50 text-emerald-600 px-3 py-1 rounded-lg text-sm font-bold">
+                            <Icon name="arrow-up" size={14} /> +31%
+                        </div>
+                    </div>
+                    <div class="card-premium bg-white p-6 rounded-[28px] shadow-sm text-left">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">🏥 衞生疾病發生率</p>
+                        <p class="text-xs text-gray-400 mb-4 italic">每年減少</p>
+                        <p class="text-4xl font-bold text-rose-500 leading-none">-3<span class="text-lg text-gray-400 font-normal ml-1">宗/年</span></p>
+                        <div class="mt-3 inline-flex items-center gap-1 bg-rose-50 text-rose-500 px-3 py-1 rounded-lg text-sm font-bold">
+                            <Icon name="arrow-down" size={14} /> 改善中
+                        </div>
+                    </div>
+                    <div class="card-premium bg-white p-6 rounded-[28px] shadow-sm text-left">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">📍 廁所步行距離</p>
+                        <p class="text-xs text-gray-400 mb-4 italic">黑暗泥濘 → 明亮安全</p>
+                        <div class="flex items-end gap-2">
+                            <span class="text-2xl font-bold text-gray-300 line-through">500m</span>
+                            <span class="text-lg text-gray-300">→</span>
+                            <span class="text-4xl font-bold text-blue-500">1.2m</span>
+                        </div>
+                        <div class="mt-3 inline-flex items-center gap-1 bg-blue-50 text-blue-500 px-3 py-1 rounded-lg text-sm font-bold">
+                            <Icon name="map-pin" size={14} /> -498.8m
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-8">
+                    <div class="col-span-2 space-y-8">
+                        <div class="card-premium bg-white rounded-[32px] p-8 shadow-sm text-left">
+                            <div class="flex justify-between items-center mb-8">
+                                <h2 class="text-xl font-bold flex items-center gap-2">
+                                    <Icon name="rss" className="text-emerald-500" /> 項目動態更新流
+                                </h2>
+                                <button class="text-emerald-500 text-sm font-bold hover:underline">查看所有更新</button>
+                            </div>
+                            <div class="space-y-12 relative before:absolute before:left-4 before:top-2 before:bottom-2 before:w-px before:bg-gray-100">
+                                <div class="relative pl-12 text-left">
+                                    <div class="absolute left-3 top-2 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-8 ring-emerald-50 pulse-dot"></div>
+                                    <p class="text-[10px] font-bold text-gray-400 mb-2 tracking-widest uppercase">2週前 · 最新動態</p>
+                                    <p class="text-gray-700 leading-relaxed text-lg font-medium mb-6 text-left">
+                                        「Sophea 通過了初中入學考試。她媽媽說，因為學校有廁所她才能繼續讀書。」
+                                    </p>
+                                    <div class="flex gap-4 mb-8">
+                                        <button class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-xl text-sm font-bold transition-colors">
+                                            查看完整更新
+                                        </button>
+                                        <button onClick={(e) => { e.stopPropagation(); onShare(); }} class="bg-emerald-50 hover:bg-emerald-100 text-emerald-600 px-4 py-2 rounded-xl text-sm font-bold transition-colors flex items-center gap-2">
+                                            <Icon name="share-2" size={16} /> 分享這個故事
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="relative pl-12 text-left">
+                                    <div class="absolute left-3 top-2 w-2.5 h-2.5 rounded-full bg-blue-500 ring-8 ring-blue-50"></div>
+                                    <p class="text-[10px] font-bold text-gray-400 mb-2 tracking-widest uppercase">📍 你的廁所位置</p>
+                                    <div class="rounded-3xl overflow-hidden bg-gray-100 relative h-32 w-full group cursor-pointer border border-gray-200 mb-8">
+                                        <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=800" class="absolute w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500" />
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                        <div class="absolute bottom-4 left-4 text-white">
+                                            <p class="text-sm font-bold flex items-center gap-1"><Icon name="map-pin" size={14} /> Kampong Thom Toilet #047</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="relative pl-12">
+                                    <div class="absolute left-3 top-2 w-2.5 h-2.5 rounded-full bg-gray-200"></div>
+                                    <p class="text-sm font-medium text-gray-400 italic flex items-center gap-2 text-left">
+                                        <Icon name="bell" size={14} /> 🔔 下一次更新：13天後
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-8 text-left">
+                        <div class="bg-gradient-to-br from-emerald-500 to-blue-600 rounded-[32px] p-8 text-white shadow-xl shadow-emerald-100">
+                            <Icon name="zap" className="mb-6 opacity-60 text-white" size={32} />
+                            <h3 class="text-xl font-bold mb-2">升級你的影響力</h3>
+                            <p class="text-emerald-50 text-sm mb-6 leading-relaxed">邀請 2 位朋友加入拼團，即可提前解鎖「章節 3: 守望者之瞳」特別版勳章。</p>
+                            <button class="w-full bg-white text-emerald-600 py-3 rounded-2xl font-bold text-sm shadow-lg hover:bg-emerald-50 transition-colors btn-hover">
+                                獲取邀請鏈接
+                            </button>
+                        </div>
+                        <div class="card-premium bg-white rounded-[32px] p-8 shadow-sm">
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">我的成就勳章</h3>
+                            <div class="grid grid-cols-3 gap-4">
+                                {BADGES.slice(0, 3).map(b => (
+                                    <div key={b.id} class={`aspect-square rounded-2xl flex flex-col items-center justify-center border transition-colors group cursor-help ${b.unlocked ? 'bg-emerald-50 border-emerald-200' : 'bg-gray-50 border-gray-100 hover:border-emerald-300'}`}>
+                                        <Icon name={b.icon} className={b.unlocked ? 'text-emerald-500' : 'text-gray-300 group-hover:text-emerald-500 transition-colors'} />
+                                        <span class={`text-[8px] mt-1 font-bold ${b.unlocked ? 'text-emerald-600' : 'text-gray-300'}`}>{b.name}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Bottom action bar */}
+                <div class="mt-8 flex gap-4 justify-center">
+                    <button class="card-premium bg-white px-6 py-3 rounded-2xl text-sm font-bold text-gray-700 flex items-center gap-2 btn-hover shadow-sm">
+                        <Icon name="list" size={16} /> 查看我所有廁所
+                    </button>
+                    <button class="bg-emerald-500 text-white px-6 py-3 rounded-2xl text-sm font-bold flex items-center gap-2 btn-hover shadow-lg shadow-emerald-200">
+                        <Icon name="user-plus" size={16} /> 邀請朋友加入
+                    </button>
+                    <button class="card-premium bg-white px-6 py-3 rounded-2xl text-sm font-bold text-gray-700 flex items-center gap-2 btn-hover shadow-sm">
+                        <Icon name="trending-up" size={16} /> 升級方案
+                    </button>
+                </div>
+            </div>
+        );
+
+        const DetailView = ({ property, onBack, onShare }) => (
+            <div class="p-8 view-enter">
+                <button onClick={onBack} class="flex items-center gap-2 text-gray-400 hover:text-gray-900 mb-6 transition-colors text-left">
+                    <Icon name="arrow-left" size={18} /> 返回物業列表
+                </button>
+                <div class="bg-white rounded-[40px] card-premium overflow-hidden shadow-sm text-left">
+                    <div class="bg-gray-900 text-white p-10 flex justify-between items-center text-left">
+                        <div>
+                            <p class="mono text-emerald-400 text-xs mb-2 uppercase tracking-[0.3em]">Property Registry</p>
+                            <h2 class="text-3xl font-bold tracking-tight">TOILET #047 — Kampong Thom Village B</h2>
+                        </div>
+                        <div class="px-6 py-3 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl">
+                            <p class="mono text-emerald-500 text-sm font-bold flex items-center gap-2">
+                                <span class="relative flex h-2 w-2">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                </span>
+                                LIVE
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2">
+                        {/* Terminal-style Technical Specs */}
+                        <div class="bg-gray-950 p-10 border-r border-b border-gray-800 space-y-1 text-left">
+                            <div class="flex items-center gap-2 mb-6">
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                <span class="mono text-gray-500 text-[10px] ml-2 uppercase tracking-widest">system_status.sh</span>
+                                <span class="terminal-cursor text-emerald-400 mono">▊</span>
+                            </div>
+                            {[
+                                { k: 'Status', v: '✅ LIVE (Operational since 2026-01-15)', c: 'text-emerald-400' },
+                                { k: 'Uptime', v: '847 days', c: 'text-emerald-400' },
+                                { k: 'Users', v: '1 family (4 members, 2 female)', c: 'text-blue-400' },
+                                { k: 'GPS', v: '12.7231° N, 105.4192° E', c: 'text-yellow-400' },
+                                { k: 'Spec', v: 'Improved Toilet (Grade A, flush+septic)', c: 'text-cyan-400' },
+                                { k: 'Owner', v: 'Jason Chan', c: 'text-purple-400' },
+                                { k: 'Build Time', v: '42 days (SLA: 60 days ✅)', c: 'text-emerald-400' },
+                            ].map(item => (
+                                <div class="flex items-center text-sm py-2 mono">
+                                    <span class="text-gray-500 w-28 flex-shrink-0">{'>'} {item.k}</span>
+                                    <span class={`font-bold ${item.c}`}>{item.v}</span>
+                                </div>
+                            ))}
+                        </div>
+                        <div class="p-10 bg-gray-50/50 border-b border-gray-100 text-left">
+                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-8">Impact Metrics</h3>
+                            <div class="space-y-8">
+                                <div class="bg-white p-6 rounded-3xl border border-emerald-100 shadow-sm">
+                                    <p class="text-xs font-bold text-gray-400 uppercase mb-3 tracking-widest italic">👧 Sophea (13歲) 出勤率</p>
+                                    <div class="flex items-end gap-3">
+                                        <span class="text-4xl font-bold text-emerald-500 tracking-tighter">63% <span class="text-2xl text-gray-300 font-normal mx-1">→</span> 94%</span>
+                                        <span class="text-emerald-400 text-sm font-bold mb-1 flex items-center gap-1 bg-emerald-50 px-2 py-1 rounded-lg">
+                                            <Icon name="arrow-up" size={14} /> 31%
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-6">
+                                    <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+                                        <p class="text-[10px] text-gray-400 font-bold uppercase mb-3">🏥 衛生相關疾病發生率</p>
+                                        <p class="text-xl font-bold text-red-500 tracking-tight">-3 宗/年</p>
+                                    </div>
+                                    <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+                                        <p class="text-[10px] text-gray-400 font-bold uppercase mb-3">📍 距離廁所的步程</p>
+                                        <div class="flex items-end gap-2">
+                                            <p class="text-xl font-bold text-blue-500 tracking-tight line-through opacity-50">500m</p>
+                                            <p class="text-2xl font-bold text-emerald-500 tracking-tighter">1.2m</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-8 bg-white flex gap-6 justify-center">
+                        <button class="bg-white text-gray-700 px-8 py-4 rounded-2xl text-sm font-bold border border-gray-100 shadow-sm hover:bg-gray-50 flex items-center gap-3 transition-all">
+                            <Icon name="map" size={18} /> 查看 Google Maps 實景
+                        </button>
+                        <button
+                            onClick={onShare}
+                            class="bg-emerald-500 text-white px-10 py-4 rounded-2xl text-sm font-bold shadow-xl shadow-emerald-100 hover:bg-emerald-600 flex items-center gap-3 transition-all active:scale-95"
+                        >
+                            <Icon name="share-2" size={18} /> Share My Toilet
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+
+        // --- New Tab Views ---
+
+        const TeamUpView = () => (
+            <div class="p-8 view-enter">
+                <header class="mb-8 text-left">
+                    <h1 class="text-3xl font-bold text-gray-900">拼團大廳</h1>
+                    <p class="text-gray-500">加入其他捐款者的團隊，一起更快建成廁所。</p>
+                </header>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {TEAMUPS.map(t => (
+                        <div key={t.id} class="card-premium bg-white rounded-3xl overflow-hidden shadow-sm">
+                            <div class="h-40 relative overflow-hidden">
+                                <img src={t.img} class="w-full h-full object-cover" />
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                <div class="absolute bottom-4 left-4 text-white">
+                                    <p class="font-bold text-lg">{t.title}</p>
+                                </div>
+                                {t.daysLeft <= 7 && (
+                                    <div class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase urgent-badge">
+                                        即將截止
+                                    </div>
+                                )}
+                            </div>
+                            <div class="p-6 text-left">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center gap-2">
+                                        <div class="flex -space-x-2">
+                                            {Array.from({ length: Math.min(t.members, 4) }).map((_, i) => (
+                                                <div key={i} class="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-300 to-blue-300 border-2 border-white"></div>
+                                            ))}
+                                        </div>
+                                        <span class="text-sm font-bold text-gray-700">{t.members}/{t.target} 人</span>
+                                    </div>
+                                    <span class="text-xs font-bold text-gray-400 mono">剩餘 {t.daysLeft} 天</span>
+                                </div>
+                                <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-3">
+                                    <div class="h-full rounded-full progress-fill" style={{ width: `${(t.raised / t.goal) * 100}%` }}></div>
+                                </div>
+                                <div class="text-[11px] text-gray-500 mono text-center mb-4">
+                                    已籌 HK${t.raised.toLocaleString()} / 目標 HK${t.goal.toLocaleString()}
+                                </div>
+                                <button class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-2xl text-sm font-bold btn-hover shadow-lg shadow-emerald-200">
+                                    加入拼團
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+
+        const RewardsView = () => (
+            <div class="p-8 view-enter">
+                <header class="mb-8 text-left">
+                    <h1 class="text-3xl font-bold text-gray-900">業主福利</h1>
+                    <p class="text-gray-500">你的每一份善意都會化為一枚永久勳章。</p>
+                </header>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-12">
+                    {BADGES.map(b => (
+                        <div key={b.id} class={`card-premium bg-white rounded-3xl p-6 text-center shadow-sm ${b.unlocked ? '' : 'opacity-50'}`}>
+                            <div class={`w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center ${b.unlocked ? 'bg-emerald-50' : 'bg-gray-100'}`}>
+                                <Icon name={b.icon} size={28} className={b.unlocked ? 'text-emerald-500' : 'text-gray-300'} />
+                            </div>
+                            <p class="font-bold text-sm text-gray-900 mb-1">{b.name}</p>
+                            <p class="text-[10px] text-gray-400">{b.desc}</p>
+                            {b.unlocked && <p class="text-[9px] text-emerald-500 font-bold mt-2 mono">{b.date}</p>}
+                            {!b.unlocked && <p class="text-[9px] text-gray-300 font-bold mt-2">🔒 未解鎖</p>}
+                        </div>
+                    ))}
+                </div>
+                <div class="card-premium bg-white rounded-[32px] p-8 shadow-sm text-left">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-2"><Icon name="book-open" className="text-emerald-500" /> The Promise Chapter 進度</h2>
+                    <div class="flex items-center gap-6 mb-4">
+                        <div class="flex-1">
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="font-bold text-emerald-600">章節 2: 守望者</span>
+                                <span class="text-gray-400 mono">8/12 個月</span>
+                            </div>
+                            <div class="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
+                                <div class="h-full rounded-full progress-fill" style={{ width: '66.6%' }}></div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-3xl font-bold text-emerald-500">66%</p>
+                            <p class="text-[10px] text-gray-400">完成度</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const WalletView = () => {
+            const total = TRANSACTIONS.reduce((s, t) => s + t.amount, 0);
+            return (
+                <div class="p-8 view-enter">
+                    <header class="mb-8 text-left">
+                        <h1 class="text-3xl font-bold text-gray-900">我的錢包</h1>
+                        <p class="text-gray-500">查看你的所有捐款記錄。</p>
+                    </header>
+                    <div class="grid grid-cols-3 gap-6 mb-8">
+                        <div class="card-premium bg-white p-8 rounded-[32px] shadow-sm text-left">
+                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">累計捐款</span>
+                            <p class="text-4xl font-bold text-gray-900 mt-2">HK${total.toLocaleString()}</p>
+                        </div>
+                        <div class="card-premium bg-white p-8 rounded-[32px] shadow-sm text-left">
+                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">捐款次數</span>
+                            <p class="text-4xl font-bold text-gray-900 mt-2">{TRANSACTIONS.length}<span class="text-lg text-gray-400 font-normal ml-1">次</span></p>
+                        </div>
+                        <div class="card-premium bg-white p-8 rounded-[32px] shadow-sm text-left">
+                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">最近一筆</span>
+                            <p class="text-4xl font-bold text-emerald-500 mt-2">HK${TRANSACTIONS[0].amount}</p>
+                        </div>
+                    </div>
+                    <div class="card-premium bg-white rounded-[32px] p-8 shadow-sm text-left">
+                        <h2 class="text-xl font-bold mb-6 flex items-center gap-2"><Icon name="receipt" className="text-emerald-500" /> 捐款記錄</h2>
+                        <div class="space-y-1">
+                            {TRANSACTIONS.map(t => (
+                                <div key={t.id} class="flex items-center justify-between py-4 border-b border-gray-50 last:border-0">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 bg-emerald-50 rounded-2xl flex items-center justify-center">
+                                            <Icon name="heart" size={18} className="text-emerald-500" />
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-sm text-gray-900">{t.desc}</p>
+                                            <p class="text-[10px] text-gray-400 mono">{t.date}</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-bold text-gray-900">HK${t.amount}</p>
+                                        <span class="text-[9px] bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full font-bold uppercase">已完成</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Main App ---
+        const App = () => {
+            const [activeTab, setActiveTab] = useState('portfolio');
+            const [selectedProp, setSelectedProp] = useState(null);
+            const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+
+            useEffect(() => {
+                if (window.lucide) {
+                    window.lucide.createIcons();
+                }
+            }, [activeTab, selectedProp, isShareModalOpen]);
+
+            return (
+                <div class="min-h-screen">
+                    <Sidebar activeTab={activeTab} setActiveTab={(t) => { setActiveTab(t); setSelectedProp(null); }} />
+                    <main class="ml-64 min-h-screen main-content">
+                        {selectedProp ? (
+                            <DetailView property={selectedProp} onBack={() => setSelectedProp(null)} onShare={() => setIsShareModalOpen(true)} />
+                        ) : activeTab === 'explore' ? (
+                            <ExploreView onSelect={setSelectedProp} />
+                        ) : activeTab === 'portfolio' ? (
+                            <PortfolioView onShare={() => setIsShareModalOpen(true)} />
+                        ) : activeTab === 'teamup' ? (
+                            <TeamUpView />
+                        ) : activeTab === 'rewards' ? (
+                            <RewardsView />
+                        ) : activeTab === 'wallet' ? (
+                            <WalletView />
+                        ) : (
+                            <div class="p-8 flex items-center justify-center h-screen text-gray-300 italic">
+                                模塊開發中 (Coming Soon)...
+                            </div>
+                        )}
+                    </main>
+                    <ShareModal
+                        isOpen={isShareModalOpen}
+                        onClose={() => setIsShareModalOpen(false)}
+                        property={selectedProp || PROPERTIES[0]}
+                    />
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
