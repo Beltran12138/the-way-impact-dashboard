@@ -1,781 +1,1172 @@
 <!DOCTYPE html>
 <html lang="zh-HK">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE WAY - Impact Dashboard Demo</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
-        rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f8faf9 0%, #eef2f0 50%, #f0f4f8 100%);
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THE WAY × 世界廁所日 — 點滴是生命 A Drop of Life</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --adol-blue: #00A9E0;
+      --adol-blue-dk: #006CA3;
+      --adol-blue-lt: #E0F5FC;
+      --adol-bg: #FAFCFF;
+      --tw-sage: #5EAB78;
+      --tw-coral: #FF8C69;
+    }
+    body { font-family: 'Poppins', 'Inter', sans-serif; background: var(--adol-bg); }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .adol-blue { color: var(--adol-blue); }
+    .bg-adol { background: var(--adol-blue); }
+    .bg-adol-dk { background: var(--adol-blue-dk); }
+    .bg-adol-lt { background: var(--adol-blue-lt); }
+    .border-adol { border-color: var(--adol-blue); }
+
+    /* Navbar */
+    .adol-nav { background: #fff; border-bottom: 1px solid #e8f4fc; position: sticky; top: 0; z-index: 100; }
+    .adol-nav a { color: #1d1c1c; font-size: 14px; font-weight: 500; text-decoration: none; padding: 4px 2px; }
+    .adol-nav a:hover, .adol-nav a.active { color: var(--adol-blue); }
+    .btn-donate { background: var(--adol-blue); color: #fff; border-radius: 30px; padding: 10px 24px; font-weight: 700; font-size: 14px; border: none; cursor: pointer; transition: all 0.2s; }
+    .btn-donate:hover { background: var(--adol-blue-dk); transform: translateY(-1px); }
+    .dropdown { position: relative; display: inline-block; }
+    .dropdown-content { display: none; position: absolute; top: 100%; left: 0; background: #fff; min-width: 150px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); padding: 8px 0; z-index: 200; }
+    .dropdown:hover .dropdown-content { display: block; }
+    .dropdown-content a { display: block; padding: 8px 16px; font-size: 13px; white-space: nowrap; }
+    .dropdown-content a:hover { background: var(--adol-blue-lt); color: var(--adol-blue); }
+
+    /* Hero */
+    .hero-gradient { background: linear-gradient(135deg, #f0faff 0%, #e8f6fe 50%, #fafcff 100%); }
+    .campaign-badge { background: var(--adol-blue); color: #fff; display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; }
+
+    /* CaaS Cards */
+    .caas-card { background: #fff; border-radius: 24px; border: 1.5px solid #e8f4fc; padding: 32px 28px; position: relative; transition: all 0.3s; text-align: left; }
+    .caas-card:hover { border-color: var(--adol-blue); box-shadow: 0 16px 40px rgba(0,169,224,0.12); transform: translateY(-4px); }
+    .caas-card.featured { border-color: var(--adol-blue); box-shadow: 0 16px 40px rgba(0,169,224,0.15); }
+    .caas-featured-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--adol-blue); color: #fff; padding: 4px 18px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+    .tier-btn { display: block; width: 100%; background: var(--adol-blue); color: #fff; border: none; border-radius: 14px; padding: 14px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 20px; transition: all 0.2s; }
+    .tier-btn:hover { background: var(--adol-blue-dk); }
+    .tier-btn.outline { background: transparent; border: 2px solid var(--adol-blue); color: var(--adol-blue); }
+    .tier-btn.outline:hover { background: var(--adol-blue); color: #fff; }
+
+    /* Dashboard */
+    .dashboard-wrap { background: #fff; border-radius: 0; min-height: 100vh; }
+    .sidebar { background: #fff; border-right: 1px solid #e8f4fc; }
+    .sidebar-btn { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 16px; width: 100%; border: none; background: transparent; cursor: pointer; font-size: 14px; font-weight: 500; color: #6b7280; transition: all 0.2s; text-align: left; font-family: 'Poppins', sans-serif; }
+    .sidebar-btn:hover { background: var(--adol-blue-lt); color: var(--adol-blue); }
+    .sidebar-btn.active { background: var(--adol-blue); color: #fff; font-weight: 700; }
+
+    /* Card base */
+    .card { background: #fff; border-radius: 24px; border: 1px solid #e8f4fc; transition: all 0.3s; }
+    .card:hover { border-color: rgba(0,169,224,0.3); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+
+    /* Progress */
+    .progress-bar { height: 8px; background: #e8f4fc; border-radius: 8px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--adol-blue), #5bc8f5); border-radius: 8px; transition: width 1.2s ease; }
+
+    /* Animations */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    .fade-up { animation: fadeUp 0.45s ease-out both; }
+    @keyframes pulse-blue { 0%,100% { box-shadow: 0 0 0 0 rgba(0,169,224,0.4); } 50% { box-shadow: 0 0 0 8px rgba(0,169,224,0); } }
+    .pulse-dot { animation: pulse-blue 2s infinite; }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+    .terminal-cursor { animation: blink 1s step-end infinite; }
+
+    /* Pie chart */
+    .pie-wrap { position: relative; width: 160px; height: 160px; margin: 0 auto; }
+    .pie-wrap svg { transform: rotate(-90deg); }
+    .pie-legend { font-size: 11px; }
+
+    /* Stat chips */
+    .stat-chip { background: var(--adol-blue-lt); border-radius: 16px; padding: 20px; text-align: center; }
+
+    /* Watermark underline */
+    .blue-underline { position: relative; display: inline-block; }
+    .blue-underline::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 3px; background: var(--adol-blue); border-radius: 2px; }
+
+    /* Share Modal */
+    .share-modal-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:2000;display:flex;align-items:center;justify-content:center;padding:24px; }
+
+    /* Glass */
+    .glass { background:rgba(255,255,255,0.12);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.2); }
+
+    /* Wallet tab rows */
+    .tx-row { display:grid;grid-template-columns:3fr 1fr 1fr 1fr;gap:8px;padding:14px 0;border-bottom:1px solid #f3f4f6;font-size:13px;align-items:center; }
+    .tx-row:last-child { border-bottom:none; }
+
+    /* Monopoly CTA */
+    .monopoly-cta { background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);border-radius:24px;padding:28px;display:flex;align-items:center;gap:20px;margin-bottom:28px;border:1px solid rgba(0,169,224,0.2); }
+
+    /* Footer */
+    .adol-footer { background: #1d1c1c; color: rgba(255,255,255,0.7); }
+    .adol-footer a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 13px; }
+    .adol-footer a:hover { color: var(--adol-blue); }
+
+    /* THE WAY badge */
+    .theway-nav-badge { background: var(--adol-blue); color: #fff; border-radius: 6px; font-size: 11px; font-weight: 700; padding: 2px 8px; margin-left: 4px; }
+
+    /* Urgency */
+    @keyframes urgPulse { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.4);} 50%{box-shadow:0 0 0 6px rgba(239,68,68,0);} }
+    .urg { animation: urgPulse 1.5s infinite; }
+  </style>
+
+<!-- ════ GEO: JSON-LD Structured Data for AI / Generative Search ════ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "NGO",
+      "@id": "https://adropoflife.org/#organization",
+      "name": "A Drop of Life",
+      "alternateName": ["點滴是生命", "ADOL"],
+      "url": "https://adropoflife.org",
+      "foundingDate": "1998",
+      "description": "香港本地非政府組織，致力在柬埔寨、尼泊爾、緬甸等地建設水資源與衛生設施，已建超過164,600個衛生設施，服務逾500萬受益人。",
+      "areaServed": ["Cambodia", "Nepal", "Myanmar"],
+      "knowsAbout": ["rural sanitation", "WASH", "toilet construction", "open defecation free"],
+      "hasCredential": {
+        "@type": "EducationalOccupationalCredential",
+        "credentialCategory": "GiveWell-assessed charity, $11 per DALY averted"
+      }
+    },
+    {
+      "@type": "Event",
+      "@id": "https://adropoflife.org/the-way/#event",
+      "name": "THE WAY — 世界廁所日 2025 籌款活動",
+      "description": "ADOL 於世界廁所日 2025（11月19日）發起的THE WAY籌款活動，HK$3,500可在柬埔寨為一個家庭建造一座私人廁所，守護女性安全與尊嚴。",
+      "startDate": "2025-11-19",
+      "eventStatus": "https://schema.org/EventScheduled",
+      "organizer": { "@id": "https://adropoflife.org/#organization" },
+      "offers": [
+        { "@type": "Offer", "name": "Supporter", "price": "50", "priceCurrency": "HKD", "description": "每月HK$50起，2-4人共建一座廁所" },
+        { "@type": "Offer", "name": "Builder", "price": "300", "priceCurrency": "HKD", "description": "每月HK$300，12個月獨立建成並命名" },
+        { "@type": "Offer", "name": "Owner", "price": "3500", "priceCurrency": "HKD", "description": "一次性HK$3,500，完整廁所擁有權，永久命名" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "香港有哪個NGO在柬埔寨建廁所？",
+          "acceptedAnswer": { "@type": "Answer", "text": "A Drop of Life（點滴是生命，ADOL）是香港非政府組織，自1998年起在柬埔寨、尼泊爾、緬甸等地建設衛生設施，至今已建超過164,600個設施，服務500萬人。" }
+        },
+        {
+          "@type": "Question",
+          "name": "建一座柬埔寨家庭廁所需要多少錢？",
+          "acceptedAnswer": { "@type": "Answer", "text": "ADOL的THE WAY活動中，HK$3,500可以在柬埔寨農村為一個家庭建一座完整的私人廁所，服務壽命15-20年。也可以每月HK$50起參與拼團共建。" }
+        },
+        {
+          "@type": "Question",
+          "name": "柬埔寨農村缺乏廁所的問題有多嚴重？",
+          "acceptedAnswer": { "@type": "Answer", "text": "根據JMP 2025數據，柬埔寨農村仍有40-60%家庭缺乏安全管理的廁所設施。女性需在黑暗中步行超過500米如廁，面臨安全與健康威脅，女童因此輟學。" }
+        },
+        {
+          "@type": "Question",
+          "name": "捐款建廁所的成本效益如何？",
+          "acceptedAnswer": { "@type": "Answer", "text": "根據GiveWell 2024評估，ADOL的農村衛生項目成本效益約為$11 USD/DALY（傷殘調整生命年），社會投資回報率約4.8倍，高於多數發展中國家衛生項目。" }
+        },
+        {
+          "@type": "Question",
+          "name": "廁所大富翁遊戲是什麼？",
+          "acceptedAnswer": { "@type": "Answer", "text": "廁所大富翁（Cambodia Toilet Monopoly）是THE WAY活動的互動體驗遊戲，玩家扮演柬埔寨農村女性，體驗她們每天如廁路途中面對的真實困難，從遊戲感受問題再轉化為捐款行動。" }
         }
-
-        .mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .property-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.1);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .glass {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .progress-fill {
-            transition: width 1.5s ease-in-out;
-            background: linear-gradient(90deg, #10b981, #34d399);
-            box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
-        }
-
-        @keyframes fadeSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(16px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes pulse-green {
-
-            0%,
-            100% {
-                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
-            }
-
-            50% {
-                box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
-            }
-        }
-
-        @keyframes blink {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0;
-            }
-        }
-
-        @keyframes urgentPulse {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.6;
-            }
-        }
-
-        .view-enter {
-            animation: fadeSlideIn 0.5s ease-out both;
-        }
-
-        .pulse-dot {
-            animation: pulse-green 2s infinite;
-        }
-
-        .terminal-cursor {
-            animation: blink 1s step-end infinite;
-        }
-
-        .urgent-badge {
-            animation: urgentPulse 1.5s ease-in-out infinite;
-        }
-
-        .btn-hover {
-            transition: all 0.25s ease;
-        }
-
-        .btn-hover:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25);
-        }
-
-        .btn-hover:active {
-            transform: scale(0.97);
-        }
-
-        .card-premium {
-            transition: all 0.3s ease;
-            border: 1px solid rgba(229, 231, 235, 0.8);
-        }
-
-        .card-premium:hover {
-            border-color: rgba(16, 185, 129, 0.3);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
-        }
-
-        @media (max-width: 768px) {
-            .sidebar-desktop {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-
-            .sidebar-desktop.open {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0 !important;
-            }
-
-            .hamburger {
-                display: flex !important;
-            }
-        }
-    </style>
+      ]
+    }
+  ]
+}
+</script>
 </head>
+<body>
 
-<body class="bg-gray-50 text-gray-900">
-    <div id="root"></div>
+<!-- ════════════════════════════════════════════
+     ADOL NAVBAR (faithful recreation)
+════════════════════════════════════════════ -->
+<nav class="adol-nav">
+  <div style="max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:32px;height:72px;">
+    <!-- Logo -->
+    <a href="#" style="display:flex;align-items:center;gap:8px;flex-shrink:0;text-decoration:none;">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <path d="M18 4C18 4 6 15.6 6 22.5C6 29.4 11.4 34 18 34C24.6 34 30 29.4 30 22.5C30 15.6 18 4 18 4Z" fill="#00A9E0"/>
+        <path d="M18 10C18 10 11 17.5 11 21.8C11 26.1 14.1 28.5 18 28.5" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+      </svg>
+      <div>
+        <div style="font-size:13px;font-weight:800;color:#00A9E0;line-height:1.1;letter-spacing:0.01em;">點滴是生命</div>
+        <div style="font-size:10px;color:#999;letter-spacing:0.05em;">a Drop of Life</div>
+      </div>
+    </a>
 
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Nav items -->
+    <div style="display:flex;align-items:center;gap:24px;flex:1;">
+      <a href="#" class="adol-nav" style="color:#6b7280;font-size:14px;font-weight:500;text-decoration:none;">首頁</a>
+      <a href="#" style="color:#6b7280;font-size:14px;font-weight:500;text-decoration:none;">最新消息</a>
+      <div class="dropdown">
+        <a href="#" style="color:#6b7280;font-size:14px;font-weight:500;text-decoration:none;">淨水與衞生 ▾</a>
+        <div class="dropdown-content">
+          <a href="#">為何重要</a>
+          <a href="#">水項目一覽</a>
+          <a href="#">如何支持</a>
+        </div>
+      </div>
+      <a href="#" style="color:#6b7280;font-size:14px;font-weight:500;text-decoration:none;">兒童發展項目</a>
+      <a href="#" style="color:#6b7280;font-size:14px;font-weight:500;text-decoration:none;">點滴在社區</a>
+      <div class="dropdown">
+        <a href="#" style="color:#6b7280;font-size:14px;font-weight:500;text-decoration:none;">支持我們 ▾</a>
+        <div class="dropdown-content">
+          <a href="#">捐款支持</a>
+          <a href="#">企業參與</a>
+          <a href="#">成為義工</a>
+        </div>
+      </div>
+      <!-- THE WAY active page -->
+      <a href="#dashboard" style="color:var(--adol-blue);font-size:14px;font-weight:700;text-decoration:none;">
+        THE WAY <span class="theway-nav-badge">活動</span>
+      </a>
+    </div>
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
+    <div style="display:flex;align-items:center;gap:16px;flex-shrink:0;">
+      <a href="#" style="color:#6b7280;font-size:13px;font-weight:500;text-decoration:none;">English</a>
+      <button class="btn-donate" onclick="document.getElementById('caas').scrollIntoView({behavior:'smooth'})">立即捐款</button>
+    </div>
+  </div>
+</nav>
 
-        // --- Icons Component Wrapper ---
-        const Icon = ({ name, size = 20, className = "" }) => {
-            return <i data-lucide={name} style={{ width: size, height: size }} class={className}></i>;
-        };
 
-        // --- Mock Data ---
-        const PROPERTIES = [
-            { id: 1, name: "1 Toilet in Kampong Thom, Village B", location: "Cambodia", funded: 60, target: 3500, raised: 2100, badges: ["✨急需支援", "🏫 學校項目"], img: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=800" },
-            { id: 2, name: "Family Latrine in Kampong Chhnang", location: "Cambodia", funded: 85, target: 1200, raised: 1020, badges: ["🤝 拼團中"], img: "https://images.unsplash.com/photo-1542601906990-b4d3fb75bb44?auto=format&fit=crop&q=80&w=800" },
-            { id: 3, name: "School Toilet Block in Siem Reap", location: "Cambodia", funded: 35, target: 5000, raised: 1750, badges: ["✨急需支援", "🏫 學校項目", "🆕 新項目"], img: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=800" }
-        ];
+<!-- ════════════════════════════════════════════
+     CAMPAIGN HERO
+════════════════════════════════════════════ -->
+<section class="hero-gradient" style="padding:80px 24px 60px;">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;">
+    <div class="fade-up" style="text-align:left;">
+      <div class="campaign-badge" style="margin-bottom:24px;">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="7" fill="white" opacity="0.3"/><circle cx="7" cy="7" r="4" fill="white"/></svg>
+        世界廁所日 2025 · 11月19日
+      </div>
+      <h1 style="font-size:clamp(42px,5vw,68px);font-weight:800;color:#1d1c1c;line-height:1.05;margin-bottom:20px;letter-spacing:-0.02em;">
+        THE<br/><span style="color:var(--adol-blue);">WAY</span>
+      </h1>
+      <p style="font-size:20px;color:#4b5563;margin-bottom:12px;font-weight:500;line-height:1.5;">
+        她每天走 2,000 步才能如廁。<br/>你走 10 步。
+      </p>
+      <p style="font-size:16px;color:#6b7280;margin-bottom:36px;line-height:1.6;">
+        HK$3,500，在柬埔寨為一個家庭建一座私人廁所。<br/>
+        一份尊嚴，看得見的改變。
+      </p>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;">
+        <button class="btn-donate" style="font-size:16px;padding:14px 32px;" onclick="document.getElementById('caas').scrollIntoView({behavior:'smooth'})">
+          HK$50/月 起 立即支持
+        </button>
+        <button onclick="document.getElementById('dashboard').scrollIntoView({behavior:'smooth'})" style="background:transparent;border:2px solid var(--adol-blue);color:var(--adol-blue);border-radius:30px;padding:14px 28px;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.2s;font-family:Poppins,sans-serif;">
+          查看廁所進度
+        </button>
+      </div>
+      <div style="display:flex;gap:32px;margin-top:40px;padding-top:40px;border-top:1px solid #e8f4fc;">
+        <div>
+          <div style="font-size:28px;font-weight:800;color:#1d1c1c;">164,600+</div>
+          <div style="font-size:12px;color:#9ca3af;font-weight:500;">已建衛生設施</div>
+        </div>
+        <div>
+          <div style="font-size:28px;font-weight:800;color:#1d1c1c;">500萬+</div>
+          <div style="font-size:12px;color:#9ca3af;font-weight:500;">受益人</div>
+        </div>
+        <div>
+          <div style="font-size:28px;font-weight:800;color:var(--adol-blue);">HK$3,500</div>
+          <div style="font-size:12px;color:#9ca3af;font-weight:500;">建一座廁所</div>
+        </div>
+        <div>
+          <div style="font-size:28px;font-weight:800;color:var(--tw-sage);">$11/DALY</div>
+          <div style="font-size:12px;color:#9ca3af;font-weight:500;">成本效益</div>
+        </div>
+      </div>
+    </div>
 
-        const TEAMUPS = [
-            { id: 1, title: "Village B 廁所拼團", members: 3, target: 5, raised: 2100, goal: 3500, daysLeft: 12, img: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=400" },
-            { id: 2, title: "Siem Reap 學校廁所", members: 7, target: 10, raised: 3800, goal: 5000, daysLeft: 5, img: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=400" },
-            { id: 3, title: "Battambang 社區計劃", members: 2, target: 8, raised: 600, goal: 4200, daysLeft: 21, img: "https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&q=80&w=400" },
-        ];
-
-        const BADGES = [
-            { id: 1, name: "引路人", icon: "compass", unlocked: true, date: "2025-06-15", desc: "完成首次捐款" },
-            { id: 2, name: "守望者", icon: "eye", unlocked: true, date: "2025-12-01", desc: "持續供廁 6 個月" },
-            { id: 3, name: "建築師", icon: "home", unlocked: true, date: "2026-01-15", desc: "成功建造一座廁所" },
-            { id: 4, name: "傳播者", icon: "share-2", unlocked: false, date: null, desc: "分享故事 10 次" },
-            { id: 5, name: "領袖", icon: "users", unlocked: false, date: null, desc: "邀請 5 位朋友加入" },
-            { id: 6, name: "守護神", icon: "shield", unlocked: false, date: null, desc: "建造 3 座廁所" },
-        ];
-
-        const TRANSACTIONS = [
-            { id: 1, date: "2026-02-15", type: "donation", amount: 500, desc: "Village B 廁所 月供", status: "completed" },
-            { id: 2, date: "2026-01-15", type: "donation", amount: 500, desc: "Village B 廁所 月供", status: "completed" },
-            { id: 3, date: "2025-12-15", type: "donation", amount: 500, desc: "Village B 廁所 月供", status: "completed" },
-            { id: 4, date: "2025-11-15", type: "donation", amount: 100, desc: "Siem Reap 拼團", status: "completed" },
-            { id: 5, date: "2025-06-15", type: "donation", amount: 500, desc: "Village B 首次捐款", status: "completed" },
-        ];
-
-        // --- Components ---
-
-        const Sidebar = ({ activeTab, setActiveTab }) => (
-            <div class="fixed left-0 top-0 h-screen w-64 bg-white border-r border-gray-100 p-6 flex flex-col z-50">
-                <div class="mb-10 flex items-center gap-2">
-                    <div class="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-emerald-100">W</div>
-                    <span class="font-bold text-xl tracking-tight text-gray-900 uppercase">The Way</span>
-                </div>
-                <nav class="flex-1 space-y-1">
-                    {[
-                        { id: 'explore', label: '待建項目', icon: 'search' },
-                        { id: 'portfolio', label: '我的物業', icon: 'pie-chart' },
-                        { id: 'teamup', label: '拼團大廳', icon: 'users' },
-                        { id: 'rewards', label: '業主福利', icon: 'award' },
-                        { id: 'wallet', label: '我的錢包', icon: 'wallet' },
-                    ].map(item => (
-                        <button
-                            key={item.id}
-                            onClick={() => setActiveTab(item.id)}
-                            class={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 ${activeTab === item.id ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-100 font-semibold scale-105' : 'text-gray-500 hover:bg-gray-50'}`}
-                        >
-                            <Icon name={item.icon} size={18} />
-                            {item.label}
-                        </button>
-                    ))}
-                </nav>
-                <div class="mt-auto pt-6 border-t border-gray-100">
-                    <div class="bg-gray-50 rounded-2xl p-4 mb-6 text-left">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest">The Promise Chapter</p>
-                        <div class="flex justify-between items-center mb-1">
-                            <span class="text-xs font-bold text-emerald-600">章節 2: 守望者</span>
-                            <span class="text-[10px] text-gray-400">8/12 個月</span>
-                        </div>
-                        <div class="w-full h-1 bg-gray-200 rounded-full overflow-hidden">
-                            <div class="h-full bg-emerald-500" style={{ width: '66.6%' }}></div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3 px-2">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-blue-400 ring-2 ring-white shadow-md"></div>
-                        <div class="text-left">
-                            <p class="text-sm font-bold text-gray-900">Jason Cheung</p>
-                            <p class="text-[10px] text-emerald-500 font-bold uppercase">Premium Owner</p>
-                        </div>
-                    </div>
-                </div>
+    <!-- Right visual -->
+    <div class="fade-up" style="position:relative;">
+      <div style="background:linear-gradient(135deg,var(--adol-blue-lt),#d0eefa);border-radius:32px;overflow:hidden;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;position:relative;">
+        <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=800"
+             style="width:100%;height:100%;object-fit:cover;border-radius:32px;opacity:0.85;" />
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,106,163,0.4),transparent);border-radius:32px;"></div>
+        <!-- Live counter overlay -->
+        <div style="position:absolute;bottom:20px;left:20px;right:20px;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-radius:16px;padding:16px 20px;display:flex;align-items:center;justify-content:between;gap:16px;">
+          <div style="flex:1;">
+            <div style="font-size:11px;font-weight:700;color:var(--adol-blue);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">
+              <span id="livedt" style="display:inline-block;width:8px;height:8px;background:#22c55e;border-radius:50%;margin-right:4px;"></span>
+              世界廁所日倒計時
             </div>
-        );
+            <div id="countdown" style="font-size:22px;font-weight:800;color:#1d1c1c;mono;letter-spacing:0.05em;">計算中...</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:11px;color:#9ca3af;font-weight:500;">已籌款</div>
+            <div style="font-size:20px;font-weight:800;color:var(--adol-blue);">HK$47,250</div>
+          </div>
+        </div>
+      </div>
 
-        const ShareModal = ({ isOpen, onClose, property }) => {
-            if (!isOpen) return null;
-            return (
-                <div class="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
-                    <div class="relative w-full max-w-sm">
-                        <button onClick={onClose} class="absolute -top-12 right-0 text-white flex items-center gap-2 font-bold">
-                            <Icon name="x" /> 關閉預覽
-                        </button>
-                        {/* IG Story Mockup */}
-                        <div class="bg-gradient-to-b from-gray-900 via-emerald-900 to-black rounded-[40px] aspect-[9/16] overflow-hidden shadow-2xl border-4 border-gray-800 p-8 flex flex-col relative">
-                            <div class="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
-                                <img src={property?.img} class="w-full h-full object-cover grayscale" />
-                            </div>
-                            <div class="relative z-10 flex-1 flex flex-col">
-                                <div class="flex items-center gap-3 mb-10">
-                                    <div class="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center text-white font-bold text-xl">W</div>
-                                    <span class="text-white font-bold tracking-widest text-sm uppercase">The Way Impact</span>
-                                </div>
+      <!-- Floating pill badges -->
+      <div style="position:absolute;top:-16px;right:-16px;background:#fff;border-radius:20px;padding:10px 18px;box-shadow:0 8px 24px rgba(0,0,0,0.1);font-size:13px;font-weight:700;color:#1d1c1c;display:flex;align-items:center;gap:8px;">
+        🎮 <a href="#dashboard" style="color:var(--adol-blue);text-decoration:none;">廁所大富翁 →</a>
+      </div>
+      <div style="position:absolute;bottom:-16px;left:-16px;background:var(--adol-blue);border-radius:20px;padding:10px 18px;box-shadow:0 8px 24px rgba(0,169,224,0.3);font-size:13px;font-weight:700;color:#fff;">
+        🚽 13 座廁所建設中
+      </div>
+    </div>
+  </div>
+</section>
 
-                                <h2 class="text-3xl font-bold text-white leading-tight mb-6">
-                                    我喺柬埔寨<br />做咗業主！🏗️
-                                </h2>
 
-                                <div class="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-3xl mb-auto">
-                                    <p class="text-emerald-400 mono text-xs mb-2 tracking-widest uppercase italic text-left">Investment Report</p>
-                                    <p class="text-white text-lg font-bold mb-4 text-left">成功將一個女仔去廁所嘅路縮短咗 <span class="text-emerald-400">490 米</span>。</p>
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-black">JC</div>
-                                        <div class="text-[10px] text-gray-300 text-left">
-                                            <p class="font-bold">Jason Cheung</p>
-                                            <p>Certified Impact Owner #047</p>
-                                        </div>
-                                    </div>
-                                </div>
+<!-- ════════════════════════════════════════════
+     CaaS SUBSCRIPTION SECTION
+════════════════════════════════════════════ -->
+<section id="caas" style="padding:80px 24px;background:#fff;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:56px;">
+      <div style="font-size:12px;font-weight:700;color:var(--adol-blue);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:12px;">Charity as a Service · 廁所即產品</div>
+      <h2 style="font-size:40px;font-weight:800;color:#1d1c1c;margin-bottom:16px;line-height:1.15;">
+        選擇你的支持方式
+      </h2>
+      <p style="font-size:16px;color:#6b7280;max-width:560px;margin:0 auto;line-height:1.6;">
+        不是一次性捐款，而是真實的連結。<br/>
+        你可以隨時在儀表板看到「你的廁所」進度。
+      </p>
+    </div>
 
-                                <div class="text-center mt-8">
-                                    <p class="text-emerald-400 font-bold mb-2">#TheWayHK</p>
-                                    <div class="inline-block bg-white px-6 py-2 rounded-full text-black font-bold text-xs shadow-xl">
-                                        長按識別我的“產權”
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-6 flex gap-4">
-                            <button class="flex-1 bg-white py-3 rounded-2xl font-bold text-sm shadow-xl">保存圖片</button>
-                            <button class="flex-1 bg-emerald-500 text-white py-3 rounded-2xl font-bold text-sm shadow-xl">分享至 Instagram</button>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:start;">
+      <!-- Tier 1: Supporter -->
+      <div class="caas-card">
+        <div style="font-size:24px;margin-bottom:8px;">🌱</div>
+        <div style="font-size:12px;font-weight:700;color:var(--tw-sage);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Supporter</div>
+        <div style="font-size:40px;font-weight:800;color:#1d1c1c;margin-bottom:4px;">HK$50<span style="font-size:16px;font-weight:500;color:#9ca3af;">/月</span></div>
+        <div style="font-size:13px;color:#9ca3af;margin-bottom:24px;">每天 HK$1.6 · 隨時取消</div>
+        <div style="border-top:1px solid #e8f4fc;padding-top:20px;space-y:12px;">
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;">
+            <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#4b5563;">
+              <span style="width:20px;height:20px;background:var(--adol-blue-lt);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--adol-blue);font-size:12px;font-weight:700;flex-shrink:0;">✓</span>
+              2-4 人共建一座廁所
+            </li>
+            <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#4b5563;">
+              <span style="width:20px;height:20px;background:var(--adol-blue-lt);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--adol-blue);font-size:12px;font-weight:700;flex-shrink:0;">✓</span>
+              Kickstarter 進度條看板
+            </li>
+            <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#4b5563;">
+              <span style="width:20px;height:20px;background:var(--adol-blue-lt);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--adol-blue);font-size:12px;font-weight:700;flex-shrink:0;">✓</span>
+              個人影響力儀表板
+            </li>
+            <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#9ca3af;">
+              <span style="width:20px;height:20px;background:#f3f4f6;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#d1d5db;font-size:12px;flex-shrink:0;">-</span>
+              廁所命名權
+            </li>
+          </ul>
+        </div>
+        <button class="tier-btn outline" onclick="document.getElementById('dashboard').scrollIntoView({behavior:'smooth'})">開始支持</button>
+      </div>
 
-        const ExploreView = ({ onSelect }) => (
-            <div class="p-8 view-enter">
-                <header class="mb-8 text-left">
-                    <h1 class="text-3xl font-bold text-gray-900">待建項目大廳</h1>
-                    <p class="text-gray-500">瀏覽所有正在籌款中的村莊廁所項目，選擇您的下一份"房產投資"。</p>
-                </header>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {PROPERTIES.map(p => (
-                        <div key={p.id} class="property-card card-premium bg-white rounded-3xl overflow-hidden shadow-sm cursor-pointer group" onClick={() => onSelect(p)}>
-                            <div class="h-56 relative overflow-hidden text-left">
-                                <img src={p.img} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                                <div class="absolute top-4 left-4 flex gap-2 flex-wrap">
-                                    {p.badges.map(b => (
-                                        <span class={`glass px-3 py-1 rounded-full text-xs font-bold text-gray-700 shadow-sm ${b.includes('急需') ? 'urgent-badge !bg-red-50/80 !text-red-600 !border-red-200' : ''}`}>{b}</span>
-                                    ))}
-                                </div>
-                                {p.funded < 50 && (
-                                    <div class="absolute bottom-4 right-4 bg-red-500/90 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider urgent-badge">
-                                        急需支援
-                                    </div>
-                                )}
-                            </div>
-                            <div class="p-6 text-left">
-                                <h3 class="text-lg font-bold mb-4">{p.name}</h3>
-                                <div class="mb-6">
-                                    <div class="flex justify-between text-sm mb-2">
-                                        <span class={`font-bold ${p.funded < 50 ? 'text-red-500' : 'text-emerald-600'}`}>這條村距離有廁所還差... {100 - p.funded}%</span>
-                                    </div>
-                                    <div class="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden mb-2">
-                                        <div class="h-full rounded-full progress-fill" style={{ width: `${p.funded}%` }}></div>
-                                    </div>
-                                    <div class="text-[11px] text-gray-500 font-mono text-center py-1 mt-2">
-                                        已籌：HK${p.raised.toLocaleString()} / 目標：HK${p.target.toLocaleString()} / 剩餘：HK${(p.target - p.raised).toLocaleString()}
-                                    </div>
-                                </div>
-                                <div class="flex justify-between items-center pt-4 border-t border-gray-50">
-                                    <div class="flex items-center gap-1">
-                                        <div class="flex -space-x-2">
-                                            {[1, 2, 3].map(i => (
-                                                <div key={i} class="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-300 to-blue-300 border-2 border-white"></div>
-                                            ))}
-                                        </div>
-                                        <span class="text-[10px] text-gray-400 ml-1">預期受惠 4 人</span>
-                                    </div>
-                                    <button class="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2 rounded-xl text-sm font-bold shadow-lg shadow-emerald-200 btn-hover">
-                                        我要幫她縮短這條路
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+      <!-- Tier 2: Builder (featured) -->
+      <div class="caas-card featured" style="margin-top:-16px;">
+        <div class="caas-featured-badge">最受歡迎</div>
+        <div style="font-size:24px;margin-bottom:8px;">🚪</div>
+        <div style="font-size:12px;font-weight:700;color:var(--adol-blue);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Builder</div>
+        <div style="font-size:40px;font-weight:800;color:#1d1c1c;margin-bottom:4px;">HK$300<span style="font-size:16px;font-weight:500;color:#9ca3af;">/月</span></div>
+        <div style="font-size:13px;color:#9ca3af;margin-bottom:24px;">每天 HK$10 · 12個月建成</div>
+        <div style="border-top:1px solid #e8f4fc;padding-top:20px;">
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;">
+            <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#4b5563;">
+              <span style="width:20px;height:20px;background:var(--adol-blue);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;">✓</span>
+              加速建造，12個月完成
+            </li>
+            <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#4b5563;">
+              <span style="width:20px;height:20px;background:var(--adol-blue);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;">✓</span>
+              月度進度報告
+            </li>
+            <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#4b5563;">
+              <span style="width:20px;height:20px;background:var(--adol-blue);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;">✓</span>
+              個人影響力儀表板
+            </li>
+            <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#4b5563;">
+              <span style="width:20px;height:20px;background:var(--adol-blue);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;">✓</span>
+              廁所命名（聯合署名）
+            </li>
+            <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#4b5563;">
+              <span style="width:20px;height:20px;background:var(--adol-blue);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;">✓</span>
+              電子證書
+            </li>
+          </ul>
+        </div>
+        <button class="tier-btn" onclick="document.getElementById('dashboard').scrollIntoView({behavior:'smooth'})">立即成為 Builder</button>
+      </div>
+
+      <!-- Tier 3: Owner -->
+      <div class="caas-card">
+        <div style="font-size:24px;margin-bottom:8px;">🏠</div>
+        <div style="font-size:12px;font-weight:700;color:var(--tw-coral);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Owner</div>
+        <div style="font-size:40px;font-weight:800;color:#1d1c1c;margin-bottom:4px;">HK$3,500<span style="font-size:16px;font-weight:500;color:#9ca3af;"> 一次</span></div>
+        <div style="font-size:13px;color:#9ca3af;margin-bottom:24px;">一次建成 · 永久命名</div>
+        <div style="border-top:1px solid #e8f4fc;padding-top:20px;">
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;">
+            <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#4b5563;">
+              <span style="width:20px;height:20px;background:#fff3e0;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--tw-coral);font-size:12px;font-weight:700;flex-shrink:0;">✓</span>
+              完整廁所擁有權
+            </li>
+            <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#4b5563;">
+              <span style="width:20px;height:20px;background:#fff3e0;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--tw-coral);font-size:12px;font-weight:700;flex-shrink:0;">✓</span>
+              以你名字永久命名
+            </li>
+            <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#4b5563;">
+              <span style="width:20px;height:20px;background:#fff3e0;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--tw-coral);font-size:12px;font-weight:700;flex-shrink:0;">✓</span>
+              GPS 座標 + 現場照片
+            </li>
+            <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#4b5563;">
+              <span style="width:20px;height:20px;background:#fff3e0;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--tw-coral);font-size:12px;font-weight:700;flex-shrink:0;">✓</span>
+              官方電子證書
+            </li>
+            <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#4b5563;">
+              <span style="width:20px;height:20px;background:#fff3e0;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--tw-coral);font-size:12px;font-weight:700;flex-shrink:0;">✓</span>
+              15-20年受益追蹤報告
+            </li>
+          </ul>
+        </div>
+        <button class="tier-btn" style="background:var(--tw-coral);" onclick="document.getElementById('dashboard').scrollIntoView({behavior:'smooth'})">成為 Owner</button>
+      </div>
+    </div>
+
+    <!-- Transparency note -->
+    <div style="margin-top:40px;background:var(--adol-blue-lt);border-radius:20px;padding:24px 32px;display:flex;align-items:center;gap:20px;">
+      <div style="font-size:32px;">🔍</div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:var(--adol-blue-dk);margin-bottom:4px;">100% 透明度保證</div>
+        <div style="font-size:13px;color:#4b7c9a;line-height:1.5;">每一筆捐款都有實時餅圖追蹤。可下載 CSV 審計報告。你的錢，你看得見它在哪。</div>
+      </div>
+      <button onclick="showTab('audit')" style="margin-left:auto;background:var(--adol-blue);color:#fff;border:none;border-radius:12px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:Poppins,sans-serif;">查看透明審計 →</button>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     IMPACT DASHBOARD
+════════════════════════════════════════════ -->
+<section id="dashboard" style="padding:0;background:var(--adol-bg);">
+  <!-- Dashboard header bar -->
+  <div style="background:var(--adol-blue-dk);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;">
+    <div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.6);font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">THE WAY · 影響力儀表板</div>
+      <div style="font-size:20px;font-weight:800;color:#fff;">Toilet Impact Dashboard <span style="font-size:14px;font-weight:500;opacity:0.7;">powered by A Drop of Life</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <div style="background:rgba(255,255,255,0.1);border-radius:12px;padding:8px 16px;font-size:13px;color:#fff;font-weight:600;">
+        👤 Jason Chan · Premium Owner
+      </div>
+      <div style="width:40px;height:40px;background:linear-gradient(135deg,var(--adol-blue),#5bc8f5);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:16px;">J</div>
+    </div>
+  </div>
+
+  <div style="display:flex;min-height:80vh;" id="dashRoot">
+    <!-- Sidebar -->
+    <div class="sidebar" style="width:220px;flex-shrink:0;padding:24px 16px;display:flex;flex-direction:column;">
+      <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+        <button class="sidebar-btn active" id="tab-explore" onclick="showTab('explore')">
+          <span>🔍</span> 待建廁所
+        </button>
+        <button class="sidebar-btn" id="tab-portfolio" onclick="showTab('portfolio')">
+          <span>📊</span> 我的廁所
+        </button>
+        <button class="sidebar-btn" id="tab-teamup" onclick="showTab('teamup')">
+          <span>👥</span> 拼團大廳
+        </button>
+        <button class="sidebar-btn" id="tab-rewards" onclick="showTab('rewards')">
+          <span>🏅</span> 業主禮遇
+        </button>
+        <button class="sidebar-btn" id="tab-audit" onclick="showTab('audit')">
+          <span>📋</span> 透明審計
+        </button>
+        <button class="sidebar-btn" id="tab-wallet" onclick="showTab('wallet')">
+          <span>💳</span> 我的錢包
+        </button>
+      </div>
+      <!-- Chapter progress -->
+      <div style="background:var(--adol-blue-lt);border-radius:16px;padding:16px;margin-top:16px;">
+        <div style="font-size:10px;font-weight:700;color:var(--adol-blue);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">The Way Chapter</div>
+        <div style="font-size:12px;font-weight:700;color:var(--adol-blue-dk);margin-bottom:6px;">守望者 Lv.2</div>
+        <div class="progress-bar" style="height:6px;margin-bottom:6px;">
+          <div class="progress-fill" style="width:66%;"></div>
+        </div>
+        <div style="font-size:10px;color:#6b7280;">8 / 12 個月</div>
+      </div>
+    </div>
+
+    <!-- Main content area -->
+    <div style="flex:1;overflow:auto;">
+
+      <!-- EXPLORE TAB -->
+      <div id="view-explore" style="padding:32px;">
+        <h2 style="font-size:26px;font-weight:800;color:#1d1c1c;margin-bottom:8px;">待建廁所項目</h2>
+        <p style="color:#6b7280;margin-bottom:28px;font-size:14px;">選擇你想支持的廁所項目，幫她縮短那條路。</p>
+
+        <!-- Monopoly CTA Card -->
+        <div class="monopoly-cta">
+          <div style="font-size:48px;flex-shrink:0;">🎮</div>
+          <div style="flex:1;">
+            <div style="font-size:11px;font-weight:700;color:var(--adol-blue);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:6px;">先感受，再捐款</div>
+            <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:6px;">廁所大富翁 · 柬埔寨版</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.5;">在遊戲裡她有3條命。現實中她沒有。<br/>扮演柬埔寨農村女性，體驗那條每天必走的危險之路。</div>
+          </div>
+          <a href="https://cambodia-toilet-monopoly.vercel.app" target="_blank" style="background:var(--adol-blue);color:#fff;text-decoration:none;border-radius:14px;padding:14px 24px;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;transition:all 0.2s;" onmouseover="this.style.background='var(--adol-blue-dk)'" onmouseout="this.style.background='var(--adol-blue)'">
+            開始遊戲 →
+          </a>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+          <!-- Project Card 1 -->
+          <div class="card" style="overflow:hidden;cursor:pointer;" onclick="alert('點擊後進入項目詳情頁 · Demo')">
+            <div style="height:180px;overflow:hidden;position:relative;">
+              <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=600" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"/>
+              <div style="position:absolute;top:12px;left:12px;display:flex;gap:6px;">
+                <span style="background:rgba(255,255,255,0.9);backdrop-filter:blur(8px);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;color:#dc2626;" class="urg">✨ 急需支援</span>
+              </div>
             </div>
-        );
-
-        const PortfolioView = ({ onShare }) => (
-            <div class="p-8 view-enter">
-                <header class="mb-10 flex justify-between items-end text-left">
-                    <div>
-                        <h1 class="text-4xl font-bold text-gray-900 mb-2">Hi Jason 👋</h1>
-                        <p class="text-gray-500 italic">你已成為廁所業主 8 個月，你的投資正在改變生命。</p>
-                    </div>
-                    <div class="flex gap-4">
-                        <div class="bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-2xl flex items-center gap-2">
-                            <Icon name="award" className="text-emerald-600" size={16} />
-                            <span class="text-xs font-bold text-emerald-600 uppercase tracking-widest">引路人勳章 已解鎖</span>
-                        </div>
-                    </div>
-                </header>
-
-                {/* Stake-style summary cards */}
-                <div class="grid grid-cols-3 gap-6 mb-8">
-                    {[
-                        { label: '你建造的廁所', val: '1', unit: '個', icon: 'home', color: 'text-blue-500', bg: 'bg-blue-50' },
-                        { label: '受惠人數', val: '4', unit: '人', icon: 'users', color: 'text-rose-500', bg: 'bg-rose-50' },
-                        { label: '廁所運行天數', val: '247', unit: '天', icon: 'clock', color: 'text-emerald-500', bg: 'bg-emerald-50' },
-                    ].map(card => (
-                        <div class="card-premium bg-white p-8 rounded-[32px] shadow-sm text-left">
-                            <div class={`w-10 h-10 ${card.bg} rounded-2xl flex items-center justify-center mb-5 ${card.color}`}>
-                                <Icon name={card.icon} size={20} />
-                            </div>
-                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">{card.label}</span>
-                            <p class="text-4xl font-bold text-gray-900 leading-none mt-2">{card.val}<span class="text-lg text-gray-400 font-normal ml-1">{card.unit}</span></p>
-                        </div>
-                    ))}
+            <div style="padding:20px;">
+              <div style="font-size:10px;font-weight:700;color:var(--adol-blue);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Kampong Thom Province</div>
+              <h3 style="font-size:15px;font-weight:700;color:#1d1c1c;margin-bottom:12px;">Village B 家庭廁所 #T-047</h3>
+              <div style="margin-bottom:12px;">
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;">
+                  <span style="color:var(--adol-blue);font-weight:700;">已籌 60%</span>
+                  <span style="color:#9ca3af;">HK$2,100 / HK$3,500</span>
                 </div>
-
-                {/* Impact metrics — Stake flat card style */}
-                <div class="grid grid-cols-3 gap-6 mb-8">
-                    <div class="card-premium bg-white p-6 rounded-[28px] shadow-sm text-left">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">👧 Sophea (13歲) 出勤率</p>
-                        <p class="text-xs text-gray-400 mb-4 italic">捐款前 → 現在</p>
-                        <div class="flex items-end gap-3">
-                            <span class="text-3xl font-bold text-gray-300 line-through">63%</span>
-                            <span class="text-xl text-gray-300">→</span>
-                            <span class="text-4xl font-bold text-emerald-500">94%</span>
-                        </div>
-                        <div class="mt-3 inline-flex items-center gap-1 bg-emerald-50 text-emerald-600 px-3 py-1 rounded-lg text-sm font-bold">
-                            <Icon name="arrow-up" size={14} /> +31%
-                        </div>
-                    </div>
-                    <div class="card-premium bg-white p-6 rounded-[28px] shadow-sm text-left">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">🏥 衞生疾病發生率</p>
-                        <p class="text-xs text-gray-400 mb-4 italic">每年減少</p>
-                        <p class="text-4xl font-bold text-rose-500 leading-none">-3<span class="text-lg text-gray-400 font-normal ml-1">宗/年</span></p>
-                        <div class="mt-3 inline-flex items-center gap-1 bg-rose-50 text-rose-500 px-3 py-1 rounded-lg text-sm font-bold">
-                            <Icon name="arrow-down" size={14} /> 改善中
-                        </div>
-                    </div>
-                    <div class="card-premium bg-white p-6 rounded-[28px] shadow-sm text-left">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">📍 廁所步行距離</p>
-                        <p class="text-xs text-gray-400 mb-4 italic">黑暗泥濘 → 明亮安全</p>
-                        <div class="flex items-end gap-2">
-                            <span class="text-2xl font-bold text-gray-300 line-through">500m</span>
-                            <span class="text-lg text-gray-300">→</span>
-                            <span class="text-4xl font-bold text-blue-500">1.2m</span>
-                        </div>
-                        <div class="mt-3 inline-flex items-center gap-1 bg-blue-50 text-blue-500 px-3 py-1 rounded-lg text-sm font-bold">
-                            <Icon name="map-pin" size={14} /> -498.8m
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-3 gap-8">
-                    <div class="col-span-2 space-y-8">
-                        <div class="card-premium bg-white rounded-[32px] p-8 shadow-sm text-left">
-                            <div class="flex justify-between items-center mb-8">
-                                <h2 class="text-xl font-bold flex items-center gap-2">
-                                    <Icon name="rss" className="text-emerald-500" /> 項目動態更新流
-                                </h2>
-                                <button class="text-emerald-500 text-sm font-bold hover:underline">查看所有更新</button>
-                            </div>
-                            <div class="space-y-12 relative before:absolute before:left-4 before:top-2 before:bottom-2 before:w-px before:bg-gray-100">
-                                <div class="relative pl-12 text-left">
-                                    <div class="absolute left-3 top-2 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-8 ring-emerald-50 pulse-dot"></div>
-                                    <p class="text-[10px] font-bold text-gray-400 mb-2 tracking-widest uppercase">2週前 · 最新動態</p>
-                                    <p class="text-gray-700 leading-relaxed text-lg font-medium mb-6 text-left">
-                                        「Sophea 通過了初中入學考試。她媽媽說，因為學校有廁所她才能繼續讀書。」
-                                    </p>
-                                    <div class="flex gap-4 mb-8">
-                                        <button class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-xl text-sm font-bold transition-colors">
-                                            查看完整更新
-                                        </button>
-                                        <button onClick={(e) => { e.stopPropagation(); onShare(); }} class="bg-emerald-50 hover:bg-emerald-100 text-emerald-600 px-4 py-2 rounded-xl text-sm font-bold transition-colors flex items-center gap-2">
-                                            <Icon name="share-2" size={16} /> 分享這個故事
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="relative pl-12 text-left">
-                                    <div class="absolute left-3 top-2 w-2.5 h-2.5 rounded-full bg-blue-500 ring-8 ring-blue-50"></div>
-                                    <p class="text-[10px] font-bold text-gray-400 mb-2 tracking-widest uppercase">📍 你的廁所位置</p>
-                                    <div class="rounded-3xl overflow-hidden bg-gray-100 relative h-32 w-full group cursor-pointer border border-gray-200 mb-8">
-                                        <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=800" class="absolute w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500" />
-                                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                                        <div class="absolute bottom-4 left-4 text-white">
-                                            <p class="text-sm font-bold flex items-center gap-1"><Icon name="map-pin" size={14} /> Kampong Thom Toilet #047</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="relative pl-12">
-                                    <div class="absolute left-3 top-2 w-2.5 h-2.5 rounded-full bg-gray-200"></div>
-                                    <p class="text-sm font-medium text-gray-400 italic flex items-center gap-2 text-left">
-                                        <Icon name="bell" size={14} /> 🔔 下一次更新：13天後
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-8 text-left">
-                        <div class="bg-gradient-to-br from-emerald-500 to-blue-600 rounded-[32px] p-8 text-white shadow-xl shadow-emerald-100">
-                            <Icon name="zap" className="mb-6 opacity-60 text-white" size={32} />
-                            <h3 class="text-xl font-bold mb-2">升級你的影響力</h3>
-                            <p class="text-emerald-50 text-sm mb-6 leading-relaxed">邀請 2 位朋友加入拼團，即可提前解鎖「章節 3: 守望者之瞳」特別版勳章。</p>
-                            <button class="w-full bg-white text-emerald-600 py-3 rounded-2xl font-bold text-sm shadow-lg hover:bg-emerald-50 transition-colors btn-hover">
-                                獲取邀請鏈接
-                            </button>
-                        </div>
-                        <div class="card-premium bg-white rounded-[32px] p-8 shadow-sm">
-                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">我的成就勳章</h3>
-                            <div class="grid grid-cols-3 gap-4">
-                                {BADGES.slice(0, 3).map(b => (
-                                    <div key={b.id} class={`aspect-square rounded-2xl flex flex-col items-center justify-center border transition-colors group cursor-help ${b.unlocked ? 'bg-emerald-50 border-emerald-200' : 'bg-gray-50 border-gray-100 hover:border-emerald-300'}`}>
-                                        <Icon name={b.icon} className={b.unlocked ? 'text-emerald-500' : 'text-gray-300 group-hover:text-emerald-500 transition-colors'} />
-                                        <span class={`text-[8px] mt-1 font-bold ${b.unlocked ? 'text-emerald-600' : 'text-gray-300'}`}>{b.name}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Bottom action bar */}
-                <div class="mt-8 flex gap-4 justify-center">
-                    <button class="card-premium bg-white px-6 py-3 rounded-2xl text-sm font-bold text-gray-700 flex items-center gap-2 btn-hover shadow-sm">
-                        <Icon name="list" size={16} /> 查看我所有廁所
-                    </button>
-                    <button class="bg-emerald-500 text-white px-6 py-3 rounded-2xl text-sm font-bold flex items-center gap-2 btn-hover shadow-lg shadow-emerald-200">
-                        <Icon name="user-plus" size={16} /> 邀請朋友加入
-                    </button>
-                    <button class="card-premium bg-white px-6 py-3 rounded-2xl text-sm font-bold text-gray-700 flex items-center gap-2 btn-hover shadow-sm">
-                        <Icon name="trending-up" size={16} /> 升級方案
-                    </button>
-                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width:60%;"></div></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid #f3f4f6;">
+                <span style="font-size:11px;color:#9ca3af;">受惠 4 人 · 2 名女性</span>
+                <button style="background:var(--adol-blue);color:#fff;border:none;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif;">支持她</button>
+              </div>
             </div>
-        );
+          </div>
 
-        const DetailView = ({ property, onBack, onShare }) => (
-            <div class="p-8 view-enter">
-                <button onClick={onBack} class="flex items-center gap-2 text-gray-400 hover:text-gray-900 mb-6 transition-colors text-left">
-                    <Icon name="arrow-left" size={18} /> 返回物業列表
-                </button>
-                <div class="bg-white rounded-[40px] card-premium overflow-hidden shadow-sm text-left">
-                    <div class="bg-gray-900 text-white p-10 flex justify-between items-center text-left">
-                        <div>
-                            <p class="mono text-emerald-400 text-xs mb-2 uppercase tracking-[0.3em]">Property Registry</p>
-                            <h2 class="text-3xl font-bold tracking-tight">TOILET #047 — Kampong Thom Village B</h2>
-                        </div>
-                        <div class="px-6 py-3 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl">
-                            <p class="mono text-emerald-500 text-sm font-bold flex items-center gap-2">
-                                <span class="relative flex h-2 w-2">
-                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                                </span>
-                                LIVE
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2">
-                        {/* Terminal-style Technical Specs */}
-                        <div class="bg-gray-950 p-10 border-r border-b border-gray-800 space-y-1 text-left">
-                            <div class="flex items-center gap-2 mb-6">
-                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                                <span class="mono text-gray-500 text-[10px] ml-2 uppercase tracking-widest">system_status.sh</span>
-                                <span class="terminal-cursor text-emerald-400 mono">▊</span>
-                            </div>
-                            {[
-                                { k: 'Status', v: '✅ LIVE (Operational since 2026-01-15)', c: 'text-emerald-400' },
-                                { k: 'Uptime', v: '847 days', c: 'text-emerald-400' },
-                                { k: 'Users', v: '1 family (4 members, 2 female)', c: 'text-blue-400' },
-                                { k: 'GPS', v: '12.7231° N, 105.4192° E', c: 'text-yellow-400' },
-                                { k: 'Spec', v: 'Improved Toilet (Grade A, flush+septic)', c: 'text-cyan-400' },
-                                { k: 'Owner', v: 'Jason Chan', c: 'text-purple-400' },
-                                { k: 'Build Time', v: '42 days (SLA: 60 days ✅)', c: 'text-emerald-400' },
-                            ].map(item => (
-                                <div class="flex items-center text-sm py-2 mono">
-                                    <span class="text-gray-500 w-28 flex-shrink-0">{'>'} {item.k}</span>
-                                    <span class={`font-bold ${item.c}`}>{item.v}</span>
-                                </div>
-                            ))}
-                        </div>
-                        <div class="p-10 bg-gray-50/50 border-b border-gray-100 text-left">
-                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-8">Impact Metrics</h3>
-                            <div class="space-y-8">
-                                <div class="bg-white p-6 rounded-3xl border border-emerald-100 shadow-sm">
-                                    <p class="text-xs font-bold text-gray-400 uppercase mb-3 tracking-widest italic">👧 Sophea (13歲) 出勤率</p>
-                                    <div class="flex items-end gap-3">
-                                        <span class="text-4xl font-bold text-emerald-500 tracking-tighter">63% <span class="text-2xl text-gray-300 font-normal mx-1">→</span> 94%</span>
-                                        <span class="text-emerald-400 text-sm font-bold mb-1 flex items-center gap-1 bg-emerald-50 px-2 py-1 rounded-lg">
-                                            <Icon name="arrow-up" size={14} /> 31%
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="grid grid-cols-2 gap-6">
-                                    <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-                                        <p class="text-[10px] text-gray-400 font-bold uppercase mb-3">🏥 衛生相關疾病發生率</p>
-                                        <p class="text-xl font-bold text-red-500 tracking-tight">-3 宗/年</p>
-                                    </div>
-                                    <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-                                        <p class="text-[10px] text-gray-400 font-bold uppercase mb-3">📍 距離廁所的步程</p>
-                                        <div class="flex items-end gap-2">
-                                            <p class="text-xl font-bold text-blue-500 tracking-tight line-through opacity-50">500m</p>
-                                            <p class="text-2xl font-bold text-emerald-500 tracking-tighter">1.2m</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="p-8 bg-white flex gap-6 justify-center">
-                        <button class="bg-white text-gray-700 px-8 py-4 rounded-2xl text-sm font-bold border border-gray-100 shadow-sm hover:bg-gray-50 flex items-center gap-3 transition-all">
-                            <Icon name="map" size={18} /> 查看 Google Maps 實景
-                        </button>
-                        <button
-                            onClick={onShare}
-                            class="bg-emerald-500 text-white px-10 py-4 rounded-2xl text-sm font-bold shadow-xl shadow-emerald-100 hover:bg-emerald-600 flex items-center gap-3 transition-all active:scale-95"
-                        >
-                            <Icon name="share-2" size={18} /> Share My Toilet
-                        </button>
-                    </div>
-                </div>
+          <!-- Project Card 2 -->
+          <div class="card" style="overflow:hidden;cursor:pointer;" onclick="alert('點擊後進入項目詳情頁 · Demo')">
+            <div style="height:180px;overflow:hidden;position:relative;">
+              <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb75bb44?auto=format&fit=crop&q=80&w=600" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"/>
+              <div style="position:absolute;top:12px;left:12px;">
+                <span style="background:rgba(255,255,255,0.9);backdrop-filter:blur(8px);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;color:var(--adol-blue);">🤝 拼團中</span>
+              </div>
             </div>
-        );
-
-        // --- New Tab Views ---
-
-        const TeamUpView = () => (
-            <div class="p-8 view-enter">
-                <header class="mb-8 text-left">
-                    <h1 class="text-3xl font-bold text-gray-900">拼團大廳</h1>
-                    <p class="text-gray-500">加入其他捐款者的團隊，一起更快建成廁所。</p>
-                </header>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {TEAMUPS.map(t => (
-                        <div key={t.id} class="card-premium bg-white rounded-3xl overflow-hidden shadow-sm">
-                            <div class="h-40 relative overflow-hidden">
-                                <img src={t.img} class="w-full h-full object-cover" />
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                                <div class="absolute bottom-4 left-4 text-white">
-                                    <p class="font-bold text-lg">{t.title}</p>
-                                </div>
-                                {t.daysLeft <= 7 && (
-                                    <div class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase urgent-badge">
-                                        即將截止
-                                    </div>
-                                )}
-                            </div>
-                            <div class="p-6 text-left">
-                                <div class="flex items-center justify-between mb-4">
-                                    <div class="flex items-center gap-2">
-                                        <div class="flex -space-x-2">
-                                            {Array.from({ length: Math.min(t.members, 4) }).map((_, i) => (
-                                                <div key={i} class="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-300 to-blue-300 border-2 border-white"></div>
-                                            ))}
-                                        </div>
-                                        <span class="text-sm font-bold text-gray-700">{t.members}/{t.target} 人</span>
-                                    </div>
-                                    <span class="text-xs font-bold text-gray-400 mono">剩餘 {t.daysLeft} 天</span>
-                                </div>
-                                <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-3">
-                                    <div class="h-full rounded-full progress-fill" style={{ width: `${(t.raised / t.goal) * 100}%` }}></div>
-                                </div>
-                                <div class="text-[11px] text-gray-500 mono text-center mb-4">
-                                    已籌 HK${t.raised.toLocaleString()} / 目標 HK${t.goal.toLocaleString()}
-                                </div>
-                                <button class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-2xl text-sm font-bold btn-hover shadow-lg shadow-emerald-200">
-                                    加入拼團
-                                </button>
-                            </div>
-                        </div>
-                    ))}
+            <div style="padding:20px;">
+              <div style="font-size:10px;font-weight:700;color:var(--adol-blue);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Kampong Chhnang</div>
+              <h3 style="font-size:15px;font-weight:700;color:#1d1c1c;margin-bottom:12px;">農村家庭廁所 #T-089</h3>
+              <div style="margin-bottom:12px;">
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;">
+                  <span style="color:var(--adol-blue);font-weight:700;">已籌 85%</span>
+                  <span style="color:#9ca3af;">HK$1,020 / HK$1,200</span>
                 </div>
+                <div class="progress-bar"><div class="progress-fill" style="width:85%;"></div></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid #f3f4f6;">
+                <span style="font-size:11px;color:#9ca3af;">3 人已加入拼團</span>
+                <button style="background:var(--adol-blue);color:#fff;border:none;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif;">加入拼團</button>
+              </div>
             </div>
-        );
+          </div>
 
-        const RewardsView = () => (
-            <div class="p-8 view-enter">
-                <header class="mb-8 text-left">
-                    <h1 class="text-3xl font-bold text-gray-900">業主福利</h1>
-                    <p class="text-gray-500">你的每一份善意都會化為一枚永久勳章。</p>
-                </header>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-12">
-                    {BADGES.map(b => (
-                        <div key={b.id} class={`card-premium bg-white rounded-3xl p-6 text-center shadow-sm ${b.unlocked ? '' : 'opacity-50'}`}>
-                            <div class={`w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center ${b.unlocked ? 'bg-emerald-50' : 'bg-gray-100'}`}>
-                                <Icon name={b.icon} size={28} className={b.unlocked ? 'text-emerald-500' : 'text-gray-300'} />
-                            </div>
-                            <p class="font-bold text-sm text-gray-900 mb-1">{b.name}</p>
-                            <p class="text-[10px] text-gray-400">{b.desc}</p>
-                            {b.unlocked && <p class="text-[9px] text-emerald-500 font-bold mt-2 mono">{b.date}</p>}
-                            {!b.unlocked && <p class="text-[9px] text-gray-300 font-bold mt-2">🔒 未解鎖</p>}
-                        </div>
-                    ))}
-                </div>
-                <div class="card-premium bg-white rounded-[32px] p-8 shadow-sm text-left">
-                    <h2 class="text-xl font-bold mb-6 flex items-center gap-2"><Icon name="book-open" className="text-emerald-500" /> The Promise Chapter 進度</h2>
-                    <div class="flex items-center gap-6 mb-4">
-                        <div class="flex-1">
-                            <div class="flex justify-between text-sm mb-2">
-                                <span class="font-bold text-emerald-600">章節 2: 守望者</span>
-                                <span class="text-gray-400 mono">8/12 個月</span>
-                            </div>
-                            <div class="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
-                                <div class="h-full rounded-full progress-fill" style={{ width: '66.6%' }}></div>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-3xl font-bold text-emerald-500">66%</p>
-                            <p class="text-[10px] text-gray-400">完成度</p>
-                        </div>
-                    </div>
-                </div>
+          <!-- Project Card 3 -->
+          <div class="card" style="overflow:hidden;cursor:pointer;" onclick="alert('點擊後進入項目詳情頁 · Demo')">
+            <div style="height:180px;overflow:hidden;position:relative;">
+              <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=600" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"/>
+              <div style="position:absolute;top:12px;left:12px;display:flex;gap:6px;">
+                <span style="background:rgba(255,255,255,0.9);backdrop-filter:blur(8px);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;color:#8b5cf6;">🆕 新項目</span>
+              </div>
             </div>
-        );
-
-        const WalletView = () => {
-            const total = TRANSACTIONS.reduce((s, t) => s + t.amount, 0);
-            return (
-                <div class="p-8 view-enter">
-                    <header class="mb-8 text-left">
-                        <h1 class="text-3xl font-bold text-gray-900">我的錢包</h1>
-                        <p class="text-gray-500">查看你的所有捐款記錄。</p>
-                    </header>
-                    <div class="grid grid-cols-3 gap-6 mb-8">
-                        <div class="card-premium bg-white p-8 rounded-[32px] shadow-sm text-left">
-                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">累計捐款</span>
-                            <p class="text-4xl font-bold text-gray-900 mt-2">HK${total.toLocaleString()}</p>
-                        </div>
-                        <div class="card-premium bg-white p-8 rounded-[32px] shadow-sm text-left">
-                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">捐款次數</span>
-                            <p class="text-4xl font-bold text-gray-900 mt-2">{TRANSACTIONS.length}<span class="text-lg text-gray-400 font-normal ml-1">次</span></p>
-                        </div>
-                        <div class="card-premium bg-white p-8 rounded-[32px] shadow-sm text-left">
-                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">最近一筆</span>
-                            <p class="text-4xl font-bold text-emerald-500 mt-2">HK${TRANSACTIONS[0].amount}</p>
-                        </div>
-                    </div>
-                    <div class="card-premium bg-white rounded-[32px] p-8 shadow-sm text-left">
-                        <h2 class="text-xl font-bold mb-6 flex items-center gap-2"><Icon name="receipt" className="text-emerald-500" /> 捐款記錄</h2>
-                        <div class="space-y-1">
-                            {TRANSACTIONS.map(t => (
-                                <div key={t.id} class="flex items-center justify-between py-4 border-b border-gray-50 last:border-0">
-                                    <div class="flex items-center gap-4">
-                                        <div class="w-10 h-10 bg-emerald-50 rounded-2xl flex items-center justify-center">
-                                            <Icon name="heart" size={18} className="text-emerald-500" />
-                                        </div>
-                                        <div>
-                                            <p class="font-bold text-sm text-gray-900">{t.desc}</p>
-                                            <p class="text-[10px] text-gray-400 mono">{t.date}</p>
-                                        </div>
-                                    </div>
-                                    <div class="text-right">
-                                        <p class="font-bold text-gray-900">HK${t.amount}</p>
-                                        <span class="text-[9px] bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full font-bold uppercase">已完成</span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+            <div style="padding:20px;">
+              <div style="font-size:10px;font-weight:700;color:var(--adol-blue);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Siem Reap Province</div>
+              <h3 style="font-size:15px;font-weight:700;color:#1d1c1c;margin-bottom:12px;">學校廁所翻新 #T-112</h3>
+              <div style="margin-bottom:12px;">
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;">
+                  <span style="color:#f97316;font-weight:700;">已籌 35%</span>
+                  <span style="color:#9ca3af;">HK$1,750 / HK$5,000</span>
                 </div>
-            );
-        };
+                <div class="progress-bar"><div class="progress-fill" style="width:35%;background:linear-gradient(90deg,#f97316,#fb923c);"></div></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid #f3f4f6;">
+                <span style="font-size:11px;color:#9ca3af;">100+ 學生受益</span>
+                <button style="background:var(--adol-blue);color:#fff;border:none;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif;">支持她</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        // --- Main App ---
-        const App = () => {
-            const [activeTab, setActiveTab] = useState('portfolio');
-            const [selectedProp, setSelectedProp] = useState(null);
-            const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+      <!-- PORTFOLIO TAB -->
+      <div id="view-portfolio" style="padding:32px;display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;">
+          <div>
+            <h2 style="font-size:26px;font-weight:800;color:#1d1c1c;margin-bottom:4px;">Hi Jason 👋</h2>
+            <p style="color:#6b7280;font-size:14px;">你已成為廁所業主 8 個月，正在改變生命。</p>
+          </div>
+          <button style="background:var(--adol-blue-lt);border:none;border-radius:12px;padding:10px 18px;font-size:12px;font-weight:700;color:var(--adol-blue);cursor:pointer;font-family:Poppins,sans-serif;">🏅 引路人勳章 已解鎖</button>
+        </div>
 
-            useEffect(() => {
-                if (window.lucide) {
-                    window.lucide.createIcons();
-                }
-            }, [activeTab, selectedProp, isShareModalOpen]);
+        <!-- Stats row -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
+          <div class="card" style="padding:28px;text-align:left;">
+            <div style="width:40px;height:40px;background:var(--adol-blue-lt);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:20px;">🚽</div>
+            <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.1em;">已建廁所</div>
+            <div style="font-size:40px;font-weight:800;color:#1d1c1c;line-height:1.1;margin-top:4px;">1<span style="font-size:16px;color:#9ca3af;font-weight:400;"> 座</span></div>
+          </div>
+          <div class="card" style="padding:28px;text-align:left;">
+            <div style="width:40px;height:40px;background:#fde8e8;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:20px;">👥</div>
+            <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.1em;">受惠人數</div>
+            <div style="font-size:40px;font-weight:800;color:#1d1c1c;line-height:1.1;margin-top:4px;">4<span style="font-size:16px;color:#9ca3af;font-weight:400;"> 人</span></div>
+          </div>
+          <div class="card" style="padding:28px;text-align:left;">
+            <div style="width:40px;height:40px;background:#e8f4fc;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:20px;">⏱️</div>
+            <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.1em;">廁所運行</div>
+            <div style="font-size:40px;font-weight:800;color:#1d1c1c;line-height:1.1;margin-top:4px;">247<span style="font-size:16px;color:#9ca3af;font-weight:400;"> 天</span></div>
+          </div>
+        </div>
 
-            return (
-                <div class="min-h-screen">
-                    <Sidebar activeTab={activeTab} setActiveTab={(t) => { setActiveTab(t); setSelectedProp(null); }} />
-                    <main class="ml-64 min-h-screen main-content">
-                        {selectedProp ? (
-                            <DetailView property={selectedProp} onBack={() => setSelectedProp(null)} onShare={() => setIsShareModalOpen(true)} />
-                        ) : activeTab === 'explore' ? (
-                            <ExploreView onSelect={setSelectedProp} />
-                        ) : activeTab === 'portfolio' ? (
-                            <PortfolioView onShare={() => setIsShareModalOpen(true)} />
-                        ) : activeTab === 'teamup' ? (
-                            <TeamUpView />
-                        ) : activeTab === 'rewards' ? (
-                            <RewardsView />
-                        ) : activeTab === 'wallet' ? (
-                            <WalletView />
-                        ) : (
-                            <div class="p-8 flex items-center justify-center h-screen text-gray-300 italic">
-                                模塊開發中 (Coming Soon)...
-                            </div>
-                        )}
-                    </main>
-                    <ShareModal
-                        isOpen={isShareModalOpen}
-                        onClose={() => setIsShareModalOpen(false)}
-                        property={selectedProp || PROPERTIES[0]}
-                    />
+        <!-- Impact metrics -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
+          <div class="card" style="padding:24px;">
+            <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">👧 Sophea 出勤率</div>
+            <div style="font-size:12px;color:#9ca3af;margin-bottom:12px;font-style:italic;">捐款前 → 現在</div>
+            <div style="display:flex;align-items:baseline;gap:8px;">
+              <span style="font-size:28px;font-weight:800;color:#d1d5db;text-decoration:line-through;">63%</span>
+              <span style="color:#9ca3af;">→</span>
+              <span style="font-size:36px;font-weight:800;color:var(--adol-blue);">94%</span>
+            </div>
+            <div style="margin-top:8px;display:inline-flex;align-items:center;gap:4px;background:var(--adol-blue-lt);color:var(--adol-blue);padding:4px 10px;border-radius:8px;font-size:12px;font-weight:700;">↑ +31%</div>
+          </div>
+          <div class="card" style="padding:24px;">
+            <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">🏥 衛生疾病減少</div>
+            <div style="font-size:12px;color:#9ca3af;margin-bottom:12px;font-style:italic;">每年</div>
+            <div style="font-size:36px;font-weight:800;color:#ef4444;">-3<span style="font-size:16px;color:#9ca3af;font-weight:400;margin-left:4px;">宗/年</span></div>
+            <div style="margin-top:8px;display:inline-flex;align-items:center;gap:4px;background:#fde8e8;color:#ef4444;padding:4px 10px;border-radius:8px;font-size:12px;font-weight:700;">↓ 持續改善</div>
+          </div>
+          <div class="card" style="padding:24px;">
+            <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">📍 夜間如廁步程</div>
+            <div style="font-size:12px;color:#9ca3af;margin-bottom:12px;font-style:italic;">危險泥路 → 安全室內</div>
+            <div style="display:flex;align-items:baseline;gap:8px;">
+              <span style="font-size:22px;font-weight:700;color:#d1d5db;text-decoration:line-through;">500m</span>
+              <span style="color:#9ca3af;">→</span>
+              <span style="font-size:30px;font-weight:800;color:var(--adol-blue);">1.2m</span>
+            </div>
+            <div style="margin-top:8px;display:inline-flex;align-items:center;gap:4px;background:var(--adol-blue-lt);color:var(--adol-blue);padding:4px 10px;border-radius:8px;font-size:12px;font-weight:700;">-498.8m</div>
+          </div>
+        </div>
+
+        <!-- Activity + terminal -->
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;">
+          <div class="card" style="padding:28px;">
+            <h3 style="font-size:15px;font-weight:700;color:#1d1c1c;margin-bottom:20px;">📡 項目動態更新流</h3>
+            <div style="position:relative;padding-left:32px;border-left:2px solid #e8f4fc;">
+              <div style="position:absolute;left:-6px;top:4px;width:10px;height:10px;background:var(--adol-blue);border-radius:50%;" class="pulse-dot"></div>
+              <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">2週前 · 最新動態</div>
+              <p style="font-size:15px;color:#374151;line-height:1.6;margin-bottom:16px;">「Sophea 通過了初中入學考試。她媽媽說，因為學校有廁所她才能繼續讀書。」</p>
+              <button onclick="openShareModal()" style="background:var(--adol-blue);color:#fff;border:none;border-radius:10px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif;">📤 分享這個故事</button>
+            </div>
+            <!-- Timeline: location -->
+            <div style="position:relative;padding-left:32px;border-left:2px solid #e8f4fc;margin-top:24px;">
+              <div style="position:absolute;left:-6px;top:4px;width:10px;height:10px;background:var(--adol-blue-lt);border:2px solid var(--adol-blue);border-radius:50%;"></div>
+              <div style="font-size:10px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">📍 你的廁所位置</div>
+              <div style="border-radius:16px;overflow:hidden;height:100px;position:relative;cursor:pointer;">
+                <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=800" style="width:100%;height:100%;object-fit:cover;opacity:0.7;"/>
+                <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,60,100,0.7),transparent);"></div>
+                <div style="position:absolute;bottom:10px;left:12px;color:#fff;font-size:12px;font-weight:700;">📍 Kampong Thom Toilet #047</div>
+              </div>
+            </div>
+            <div style="position:relative;padding-left:32px;border-left:2px solid #e8f4fc;margin-top:16px;padding-bottom:8px;">
+              <div style="position:absolute;left:-5px;top:4px;width:8px;height:8px;background:#e8f4fc;border-radius:50%;"></div>
+              <div style="font-size:13px;color:#9ca3af;font-style:italic;">🔔 下一次更新：13天後</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:16px;">
+          <!-- Upgrade CTA -->
+          <div style="background:linear-gradient(135deg,var(--adol-blue-dk),var(--adol-blue));border-radius:24px;padding:24px;color:#fff;">
+            <div style="font-size:28px;margin-bottom:12px;opacity:0.7;">⚡</div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:8px;">升級你的影響力</div>
+            <div style="font-size:12px;opacity:0.8;line-height:1.5;margin-bottom:16px;">邀請 2 位朋友加入拼團，即可提前解鎖「守望者之瞳」特別版勳章。</div>
+            <button style="width:100%;background:#fff;color:var(--adol-blue);border:none;border-radius:14px;padding:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif;">獲取邀請鏈接</button>
+          </div>
+          <!-- Terminal -->
+          <div style="background:#0f172a;border-radius:20px;padding:24px;font-family:'JetBrains Mono',monospace;">
+            <div style="display:flex;gap:6px;margin-bottom:16px;">
+              <div style="width:10px;height:10px;border-radius:50%;background:#ef4444;"></div>
+              <div style="width:10px;height:10px;border-radius:50%;background:#f59e0b;"></div>
+              <div style="width:10px;height:10px;border-radius:50%;background:#22c55e;"></div>
+              <span style="color:#475569;font-size:10px;margin-left:8px;text-transform:uppercase;letter-spacing:0.1em;">toilet_status.sh</span>
+              <span class="terminal-cursor" style="color:var(--adol-blue);">▊</span>
+            </div>
+            <div style="font-size:11px;display:flex;flex-direction:column;gap:6px;">
+              <div><span style="color:#475569;">&gt; Status</span> <span style="color:#4ade80;">✅ LIVE</span></div>
+              <div><span style="color:#475569;">&gt; ID</span> <span style="color:var(--adol-blue);">TOILET #047</span></div>
+              <div><span style="color:#475569;">&gt; GPS</span> <span style="color:#f59e0b;">12.72°N 105.42°E</span></div>
+              <div><span style="color:#475569;">&gt; Owner</span> <span style="color:#c084fc;">Jason Chan</span></div>
+              <div><span style="color:#475569;">&gt; Uptime</span> <span style="color:#4ade80;">247 days</span></div>
+              <div><span style="color:#475569;">&gt; Build</span> <span style="color:#4ade80;">42d (SLA ✅)</span></div>
+            </div>
+          </div>
+          </div><!-- end right column -->
+        </div>
+      </div>
+
+      <!-- TEAM UP TAB -->
+      <div id="view-teamup" style="padding:32px;display:none;">
+        <h2 style="font-size:26px;font-weight:800;color:#1d1c1c;margin-bottom:8px;">拼團大廳</h2>
+        <p style="color:#6b7280;margin-bottom:28px;font-size:14px;">與朋友或陌生人一起，更快建成一座廁所。</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+          <div class="card" style="overflow:hidden;">
+            <div style="height:140px;background:linear-gradient(135deg,var(--adol-blue),var(--adol-blue-dk));display:flex;align-items:center;justify-content:center;font-size:40px;position:relative;">
+              🏗️
+              <span style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.2);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;color:#fff;">剩餘 12 天</span>
+            </div>
+            <div style="padding:20px;">
+              <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;">Village B 廁所拼團</h3>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px;">
+                <span style="color:#6b7280;">3 / 5 人</span>
+                <span style="color:var(--adol-blue);font-weight:700;">HK$2,100 / HK$3,500</span>
+              </div>
+              <div class="progress-bar" style="margin-bottom:14px;"><div class="progress-fill" style="width:60%;"></div></div>
+              <button style="width:100%;background:var(--adol-blue);color:#fff;border:none;border-radius:12px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif;">加入這個拼團</button>
+            </div>
+          </div>
+          <div class="card" style="overflow:hidden;">
+            <div style="height:140px;background:linear-gradient(135deg,#f97316,#fb923c);display:flex;align-items:center;justify-content:center;font-size:40px;position:relative;">
+              🏫
+              <span style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.2);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;color:#fff;animation:urgPulse 1.5s infinite;">剩餘 5 天</span>
+            </div>
+            <div style="padding:20px;">
+              <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;">Siem Reap 學校廁所</h3>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px;">
+                <span style="color:#6b7280;">7 / 10 人</span>
+                <span style="color:var(--adol-blue);font-weight:700;">HK$3,800 / HK$5,000</span>
+              </div>
+              <div class="progress-bar" style="margin-bottom:14px;"><div class="progress-fill" style="width:76%;"></div></div>
+              <button style="width:100%;background:var(--adol-blue);color:#fff;border:none;border-radius:12px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif;">加入這個拼團</button>
+            </div>
+          </div>
+          <div class="card" style="overflow:hidden;">
+            <div style="height:140px;background:linear-gradient(135deg,var(--tw-sage),#3a7a55);display:flex;align-items:center;justify-content:center;font-size:40px;position:relative;">
+              🌾
+              <span style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.2);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;color:#fff;">剩餘 21 天</span>
+            </div>
+            <div style="padding:20px;">
+              <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;">Battambang 社區計劃</h3>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px;">
+                <span style="color:#6b7280;">2 / 8 人</span>
+                <span style="color:var(--adol-blue);font-weight:700;">HK$600 / HK$4,200</span>
+              </div>
+              <div class="progress-bar" style="margin-bottom:14px;"><div class="progress-fill" style="width:14%;"></div></div>
+              <button style="width:100%;background:var(--adol-blue);color:#fff;border:none;border-radius:12px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif;">加入這個拼團</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REWARDS TAB -->
+      <div id="view-rewards" style="padding:32px;display:none;">
+        <h2 style="font-size:26px;font-weight:800;color:#1d1c1c;margin-bottom:8px;">業主禮遇</h2>
+        <p style="color:#6b7280;margin-bottom:28px;font-size:14px;">記錄你的每一步改變，解鎖專屬業主徽章。</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+          <div class="card" style="padding:24px;text-align:center;border-color:var(--adol-blue);">
+            <div style="width:64px;height:64px;background:var(--adol-blue-lt);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px;">🧭</div>
+            <div style="font-size:15px;font-weight:700;color:var(--adol-blue);margin-bottom:4px;">引路人</div>
+            <div style="font-size:11px;color:#6b7280;margin-bottom:8px;">完成首次捐款</div>
+            <div style="font-size:11px;font-weight:700;color:var(--adol-blue);background:var(--adol-blue-lt);padding:4px 12px;border-radius:20px;">✓ 已解鎖 2025-06-15</div>
+          </div>
+          <div class="card" style="padding:24px;text-align:center;border-color:var(--adol-blue);">
+            <div style="width:64px;height:64px;background:var(--adol-blue-lt);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px;">👁️</div>
+            <div style="font-size:15px;font-weight:700;color:var(--adol-blue);margin-bottom:4px;">守望者</div>
+            <div style="font-size:11px;color:#6b7280;margin-bottom:8px;">持續支持 6 個月</div>
+            <div style="font-size:11px;font-weight:700;color:var(--adol-blue);background:var(--adol-blue-lt);padding:4px 12px;border-radius:20px;">✓ 已解鎖 2025-12-01</div>
+          </div>
+          <div class="card" style="padding:24px;text-align:center;border-color:var(--adol-blue);">
+            <div style="width:64px;height:64px;background:var(--adol-blue-lt);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px;">🏗️</div>
+            <div style="font-size:15px;font-weight:700;color:var(--adol-blue);margin-bottom:4px;">建築師</div>
+            <div style="font-size:11px;color:#6b7280;margin-bottom:8px;">成功建造一座廁所</div>
+            <div style="font-size:11px;font-weight:700;color:var(--adol-blue);background:var(--adol-blue-lt);padding:4px 12px;border-radius:20px;">✓ 已解鎖 2026-01-15</div>
+          </div>
+          <div class="card" style="padding:24px;text-align:center;opacity:0.5;">
+            <div style="width:64px;height:64px;background:#f3f4f6;border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px;filter:grayscale(1);">📣</div>
+            <div style="font-size:15px;font-weight:700;color:#9ca3af;margin-bottom:4px;">傳播者</div>
+            <div style="font-size:11px;color:#9ca3af;margin-bottom:8px;">分享故事 10 次</div>
+            <div style="font-size:11px;color:#d1d5db;background:#f3f4f6;padding:4px 12px;border-radius:20px;">🔒 未解鎖</div>
+          </div>
+          <div class="card" style="padding:24px;text-align:center;opacity:0.5;">
+            <div style="width:64px;height:64px;background:#f3f4f6;border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px;filter:grayscale(1);">👥</div>
+            <div style="font-size:15px;font-weight:700;color:#9ca3af;margin-bottom:4px;">領袖</div>
+            <div style="font-size:11px;color:#9ca3af;margin-bottom:8px;">邀請 5 位朋友加入</div>
+            <div style="font-size:11px;color:#d1d5db;background:#f3f4f6;padding:4px 12px;border-radius:20px;">🔒 未解鎖</div>
+          </div>
+          <div class="card" style="padding:24px;text-align:center;opacity:0.5;">
+            <div style="width:64px;height:64px;background:#f3f4f6;border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px;filter:grayscale(1);">🛡️</div>
+            <div style="font-size:15px;font-weight:700;color:#9ca3af;margin-bottom:4px;">守護神</div>
+            <div style="font-size:11px;color:#9ca3af;margin-bottom:8px;">建造 3 座廁所</div>
+            <div style="font-size:11px;color:#d1d5db;background:#f3f4f6;padding:4px 12px;border-radius:20px;">🔒 未解鎖</div>
+          </div>
+        </div>
+        <!-- Certificate preview -->
+        <div style="margin-top:24px;background:linear-gradient(135deg,var(--adol-blue-dk),var(--adol-blue));border-radius:20px;padding:32px;color:#fff;display:flex;align-items:center;gap:24px;">
+          <div style="font-size:48px;">📜</div>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:700;margin-bottom:6px;">你的電子證書已準備好</div>
+            <div style="font-size:13px;opacity:0.8;line-height:1.5;">「Jason Chan 已於 2026 年 1 月 15 日在柬埔寨 Kampong Thom 建成一座家庭廁所，改變 4 人的生命。」</div>
+          </div>
+          <button style="background:#fff;color:var(--adol-blue);border:none;border-radius:12px;padding:12px 24px;font-size:13px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif;white-space:nowrap;">下載證書</button>
+        </div>
+      </div>
+
+      <!-- AUDIT TAB -->
+      <div id="view-audit" style="padding:32px;display:none;">
+        <h2 style="font-size:26px;font-weight:800;color:#1d1c1c;margin-bottom:8px;">透明審計</h2>
+        <p style="color:#6b7280;margin-bottom:28px;font-size:14px;">每一分錢去向清晰可見。點擊餅圖塊查看捐款者詳情。</p>
+
+        <!-- Pie chart section -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;">
+          <div class="card" style="padding:28px;">
+            <h3 style="font-size:15px;font-weight:700;margin-bottom:20px;">TOILET #047 — 捐款構成</h3>
+            <!-- SVG Pie Chart -->
+            <div style="display:flex;align-items:center;gap:24px;">
+              <div class="pie-wrap">
+                <svg width="160" height="160" viewBox="0 0 160 160">
+                  <!-- Segment 1: 43% Jason -->
+                  <circle cx="80" cy="80" r="60" fill="transparent" stroke="var(--adol-blue)" stroke-width="30"
+                    stroke-dasharray="162.4 214.2" stroke-dashoffset="0" style="cursor:pointer;" onclick="alert('Jason Chan\nHK$1,500 (43%)\n2025-06-15\n「送給在柬埔寨的她」')"/>
+                  <!-- Segment 2: 29% Mary -->
+                  <circle cx="80" cy="80" r="60" fill="transparent" stroke="var(--tw-sage)" stroke-width="30"
+                    stroke-dasharray="109.5 267.1" stroke-dashoffset="-162.4" style="cursor:pointer;" onclick="alert('Mary W.\nHK$1,000 (29%)\n2025-07-01\n「加油！」')"/>
+                  <!-- Segment 3: 17% Tom -->
+                  <circle cx="80" cy="80" r="60" fill="transparent" stroke="var(--tw-coral)" stroke-width="30"
+                    stroke-dasharray="64.1 312.5" stroke-dashoffset="-271.9" style="cursor:pointer;" onclick="alert('Tom L.\nHK$600 (17%)\n2025-08-10\n無留言')"/>
+                  <!-- Segment 4: 11% anon -->
+                  <circle cx="80" cy="80" r="60" fill="transparent" stroke="#e0e7ef" stroke-width="30"
+                    stroke-dasharray="41.5 335.1" stroke-dashoffset="-336" style="cursor:pointer;" onclick="alert('匿名捐款者\nHK$400 (11%)\n2025-09-01\n已隱藏')"/>
+                </svg>
+                <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+                  <div style="font-size:20px;font-weight:800;color:#1d1c1c;">100%</div>
+                  <div style="font-size:10px;color:#9ca3af;">籌款完成</div>
                 </div>
-            );
-        };
+              </div>
+              <div style="flex:1;">
+                <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;">點擊色塊查看詳情</div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
+                    <div style="width:12px;height:12px;border-radius:3px;background:var(--adol-blue);flex-shrink:0;"></div>
+                    <span style="color:#374151;flex:1;">Jason Chan</span>
+                    <span style="font-weight:700;">HK$1,500</span>
+                    <span style="color:#9ca3af;">43%</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
+                    <div style="width:12px;height:12px;border-radius:3px;background:var(--tw-sage);flex-shrink:0;"></div>
+                    <span style="color:#374151;flex:1;">Mary W.</span>
+                    <span style="font-weight:700;">HK$1,000</span>
+                    <span style="color:#9ca3af;">29%</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
+                    <div style="width:12px;height:12px;border-radius:3px;background:var(--tw-coral);flex-shrink:0;"></div>
+                    <span style="color:#374151;flex:1;">Tom L.</span>
+                    <span style="font-weight:700;">HK$600</span>
+                    <span style="color:#9ca3af;">17%</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
+                    <div style="width:12px;height:12px;border-radius:3px;background:#e0e7ef;flex-shrink:0;"></div>
+                    <span style="color:#374151;flex:1;">匿名</span>
+                    <span style="font-weight:700;">HK$400</span>
+                    <span style="color:#9ca3af;">11%</span>
+                  </div>
+                </div>
+                <div style="margin-top:16px;padding-top:16px;border-top:1px solid #e8f4fc;">
+                  <div style="font-size:12px;color:#9ca3af;">最低捐款 HK$100 · 確保隱私</div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
+          <!-- Transaction log -->
+          <div class="card" style="padding:28px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+              <h3 style="font-size:15px;font-weight:700;">捐款記錄</h3>
+              <button onclick="downloadCSV()" style="background:var(--adol-blue-lt);color:var(--adol-blue);border:none;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Poppins,sans-serif;">
+                ⬇️ 下載 CSV 審計報告
+              </button>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.08em;padding-bottom:8px;border-bottom:1px solid #e8f4fc;">
+                <span>項目</span><span>金額</span><span>狀態</span>
+              </div>
+              <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;font-size:13px;padding:8px 0;border-bottom:1px solid #f9fafb;">
+                <span style="color:#374151;">Village B #047 月供</span>
+                <span style="font-weight:700;">HK$500</span>
+                <span style="color:#22c55e;font-weight:700;">✓ 完成</span>
+              </div>
+              <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;font-size:13px;padding:8px 0;border-bottom:1px solid #f9fafb;">
+                <span style="color:#374151;">Village B #047 月供</span>
+                <span style="font-weight:700;">HK$500</span>
+                <span style="color:#22c55e;font-weight:700;">✓ 完成</span>
+              </div>
+              <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;font-size:13px;padding:8px 0;border-bottom:1px solid #f9fafb;">
+                <span style="color:#374151;">Siem Reap 拼團</span>
+                <span style="font-weight:700;">HK$100</span>
+                <span style="color:#22c55e;font-weight:700;">✓ 完成</span>
+              </div>
+              <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;font-size:13px;padding:8px 0;">
+                <span style="color:#374151;">Village B 首次捐款</span>
+                <span style="font-weight:700;">HK$500</span>
+                <span style="color:#22c55e;font-weight:700;">✓ 完成</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Global transparency note -->
+        <div class="card" style="padding:24px;display:flex;align-items:center;gap:16px;">
+          <div style="font-size:28px;">🔒</div>
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:700;color:#1d1c1c;margin-bottom:4px;">ADOL 透明度承諾</div>
+            <div style="font-size:13px;color:#6b7280;line-height:1.5;">所有資金流向均受監管機構審計。CSV 報告由第三方會計師核實。捐款者資料以「姓氏首字+編號」保護隱私（如：張XX #001）。</div>
+          </div>
+          <a href="https://adropoflife.org" target="_blank" style="background:var(--adol-blue);color:#fff;text-decoration:none;padding:10px 20px;border-radius:12px;font-size:13px;font-weight:700;white-space:nowrap;">查看完整年報</a>
+        </div>
+      </div>
+
+      <!-- WALLET TAB -->
+      <div id="view-wallet" style="padding:32px;display:none;">
+        <h2 style="font-size:26px;font-weight:800;color:#1d1c1c;margin-bottom:8px;">我的錢包</h2>
+        <p style="color:#6b7280;margin-bottom:28px;font-size:14px;">查看你的所有捐款記錄與累計影響力數據。</p>
+        <!-- Summary -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
+          <div class="card" style="padding:28px;text-align:left;">
+            <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">累計捐款</div>
+            <div style="font-size:40px;font-weight:800;color:#1d1c1c;">HK$2,100</div>
+          </div>
+          <div class="card" style="padding:28px;text-align:left;">
+            <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">捐款次數</div>
+            <div style="font-size:40px;font-weight:800;color:#1d1c1c;">5<span style="font-size:16px;color:#9ca3af;font-weight:400;margin-left:4px;">次</span></div>
+          </div>
+          <div class="card" style="padding:28px;text-align:left;">
+            <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">最近一筆</div>
+            <div style="font-size:40px;font-weight:800;color:var(--adol-blue);">HK$500</div>
+          </div>
+        </div>
+        <!-- Transaction table -->
+        <div class="card" style="padding:28px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+            <h3 style="font-size:15px;font-weight:700;">💳 捐款記錄</h3>
+            <button onclick="downloadCSV()" style="background:var(--adol-blue-lt);color:var(--adol-blue);border:none;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif;">⬇️ 下載 CSV 審計報告</button>
+          </div>
+          <div style="display:grid;grid-template-columns:3fr 1fr 1fr 1fr;gap:8px;font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.08em;padding-bottom:12px;border-bottom:2px solid #e8f4fc;">
+            <span>項目說明</span><span>日期</span><span>金額</span><span>狀態</span>
+          </div>
+          <div class="tx-row"><span style="color:#374151;">Village B #047 月供</span><span style="color:#9ca3af;font-size:12px;" class="mono">2026-02-15</span><span style="font-weight:700;">HK$500</span><span style="color:#22c55e;font-weight:700;font-size:12px;">✓ 完成</span></div>
+          <div class="tx-row"><span style="color:#374151;">Village B #047 月供</span><span style="color:#9ca3af;font-size:12px;" class="mono">2026-01-15</span><span style="font-weight:700;">HK$500</span><span style="color:#22c55e;font-weight:700;font-size:12px;">✓ 完成</span></div>
+          <div class="tx-row"><span style="color:#374151;">Village B #047 月供</span><span style="color:#9ca3af;font-size:12px;" class="mono">2025-12-15</span><span style="font-weight:700;">HK$500</span><span style="color:#22c55e;font-weight:700;font-size:12px;">✓ 完成</span></div>
+          <div class="tx-row"><span style="color:#374151;">Siem Reap 學校廁所 拼團</span><span style="color:#9ca3af;font-size:12px;" class="mono">2025-11-15</span><span style="font-weight:700;">HK$100</span><span style="color:#22c55e;font-weight:700;font-size:12px;">✓ 完成</span></div>
+          <div class="tx-row"><span style="color:#374151;">Village B #047 首次捐款</span><span style="color:#9ca3af;font-size:12px;" class="mono">2025-06-15</span><span style="font-weight:700;">HK$500</span><span style="color:#22c55e;font-weight:700;font-size:12px;">✓ 完成</span></div>
+        </div>
+        <!-- DALY card -->
+        <div style="margin-top:20px;background:linear-gradient(135deg,var(--adol-blue-lt),#e0f5fc);border-radius:20px;padding:24px;display:flex;align-items:center;gap:20px;">
+          <div style="font-size:36px;">💚</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--adol-blue-dk);margin-bottom:4px;">你的 HK$2,100 相當於...</div>
+            <div style="font-size:13px;color:#4b7c9a;line-height:1.6;">約 <strong>190 個 DALY</strong>（傷殘調整生命年）得以避免，相當於 4.8 倍社會投資回報。</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end main content -->
+  </div><!-- end dashRoot -->
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     IG STORY SHARE MODAL
+════════════════════════════════════════════ -->
+<div id="shareModal" class="share-modal-overlay" style="display:none;" onclick="if(event.target===this)closeShareModal()">
+  <div style="position:relative;max-width:320px;width:100%;">
+    <button onclick="closeShareModal()" style="position:absolute;top:-44px;right:0;background:none;border:none;color:#fff;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Poppins,sans-serif;">✕ 關閉預覽</button>
+    <!-- Phone frame -->
+    <div style="background:linear-gradient(160deg,#003d5c 0%,#005f8c 40%,#001a2e 100%);border-radius:36px;aspect-ratio:9/16;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,0.65);border:4px solid #2a3a4a;padding:28px;display:flex;flex-direction:column;position:relative;">
+      <!-- BG image -->
+      <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=400" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.18;pointer-events:none;"/>
+      <!-- Content -->
+      <div style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;">
+        <!-- Header -->
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:28px;">
+          <svg width="28" height="28" viewBox="0 0 36 36" fill="none"><path d="M18 4C18 4 6 15.6 6 22.5C6 29.4 11.4 34 18 34C24.6 34 30 29.4 30 22.5C30 15.6 18 4 18 4Z" fill="#00A9E0"/></svg>
+          <span style="color:#fff;font-weight:700;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;font-family:Poppins,sans-serif;">THE WAY · ADOL</span>
+        </div>
+        <!-- Big headline -->
+        <h2 style="color:#fff;font-size:26px;font-weight:800;line-height:1.2;margin-bottom:24px;font-family:Poppins,sans-serif;">我喺柬埔寨<br/>建咗一座廁所！🚽</h2>
+        <!-- Impact card -->
+        <div class="glass" style="border-radius:20px;padding:18px;margin-bottom:auto;">
+          <div style="font-size:10px;color:var(--adol-blue);font-weight:700;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:8px;font-family:'JetBrains Mono',monospace;">Impact Report</div>
+          <p style="color:#fff;font-size:14px;font-weight:600;line-height:1.5;margin-bottom:14px;font-family:Poppins,sans-serif;">成功將一個女仔去廁所嘅路縮短咗 <span style="color:#5bc8f5;font-weight:800;">498.8m</span>。</p>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--adol-blue),#5bc8f5);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:Poppins,sans-serif;">JC</div>
+            <div>
+              <div style="font-size:11px;color:#fff;font-weight:700;font-family:Poppins,sans-serif;">Jason Chan</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.55);font-family:'JetBrains Mono',monospace;">Certified Impact Owner #047</div>
+            </div>
+          </div>
+        </div>
+        <!-- Stats strip -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;margin-bottom:16px;">
+          <div style="text-align:center;">
+            <div style="font-size:18px;font-weight:800;color:var(--adol-blue);font-family:Poppins,sans-serif;">1</div>
+            <div style="font-size:9px;color:rgba(255,255,255,0.5);font-family:Poppins,sans-serif;">座廁所</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:18px;font-weight:800;color:#fff;font-family:Poppins,sans-serif;">4</div>
+            <div style="font-size:9px;color:rgba(255,255,255,0.5);font-family:Poppins,sans-serif;">人受益</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:18px;font-weight:800;color:#5bc8f5;font-family:Poppins,sans-serif;">247d</div>
+            <div style="font-size:9px;color:rgba(255,255,255,0.5);font-family:Poppins,sans-serif;">運行中</div>
+          </div>
+        </div>
+        <!-- Footer hashtag -->
+        <div style="text-align:center;">
+          <div style="color:var(--adol-blue);font-weight:700;font-size:12px;margin-bottom:8px;font-family:Poppins,sans-serif;">#TheWayHK &nbsp; #走到廁所</div>
+          <div style="background:rgba(255,255,255,0.95);display:inline-block;padding:7px 18px;border-radius:20px;font-size:10px;font-weight:700;color:#1d1c1c;font-family:Poppins,sans-serif;">長按識別我的廁所 🔍</div>
+        </div>
+      </div>
+    </div>
+    <!-- Action buttons -->
+    <div style="display:flex;gap:12px;margin-top:16px;">
+      <button style="flex:1;background:#fff;border:none;border-radius:14px;padding:14px;font-size:13px;font-weight:700;cursor:pointer;color:#1d1c1c;font-family:Poppins,sans-serif;">💾 保存圖片</button>
+      <button style="flex:1;background:var(--adol-blue);border:none;border-radius:14px;padding:14px;font-size:13px;font-weight:700;cursor:pointer;color:#fff;font-family:Poppins,sans-serif;">📤 分享至 IG</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════
+     ADOL FOOTER (faithful recreation)
+════════════════════════════════════════════ -->
+<footer class="adol-footer" style="padding:48px 24px 24px;">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <svg width="32" height="32" viewBox="0 0 36 36" fill="none"><path d="M18 4C18 4 6 15.6 6 22.5C6 29.4 11.4 34 18 34C24.6 34 30 29.4 30 22.5C30 15.6 18 4 18 4Z" fill="#00A9E0"/></svg>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#fff;">點滴是生命</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.4);">a Drop of Life</div>
+          </div>
+        </div>
+        <p style="font-size:13px;line-height:1.6;margin-bottom:16px;">香港本地非政府組織，1998年成立，致力在柬埔寨、尼泊爾、緬甸等地建設水資源與衛生設施。</p>
+        <div style="display:flex;gap:12px;">
+          <a href="#" style="color:rgba(255,255,255,0.5);font-size:12px;">Instagram</a>
+          <a href="#" style="color:rgba(255,255,255,0.5);font-size:12px;">Facebook</a>
+          <a href="#" style="color:rgba(255,255,255,0.5);font-size:12px;">LinkedIn</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px;">關於我們</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="#">使命與願景</a>
+          <a href="#">團隊介紹</a>
+          <a href="#">年度報告</a>
+          <a href="#">媒體查詢</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px;">項目</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="#">淨水與衛生</a>
+          <a href="#dashboard" style="color:var(--adol-blue);">THE WAY 廁所活動</a>
+          <a href="#">兒童發展</a>
+          <a href="#">社區教育</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px;">支持我們</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="#caas" style="color:var(--adol-blue);">立即捐款</a>
+          <a href="#">企業合作</a>
+          <a href="#">成為義工</a>
+          <a href="#">聯絡我們</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:24px;display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-size:12px;color:rgba(255,255,255,0.3);">© 2025 A Drop of Life. 香港慈善機構。</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.3);">THE WAY Campaign · CUHK COMM3400B · Impact Dashboard Demo</div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ════════════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════════════ -->
+<script>
+  // Tab switching
+  function showTab(tab) {
+    ['explore','portfolio','teamup','rewards','audit','wallet'].forEach(t => {
+      document.getElementById('view-' + t).style.display = 'none';
+      const btn = document.getElementById('tab-' + t);
+      if (btn) btn.classList.remove('active');
+    });
+    const view = document.getElementById('view-' + tab);
+    if (view) {
+      view.style.display = 'block';
+      // Reset animation
+      void view.offsetWidth;
+      view.style.animation = 'fadeUp 0.4s ease-out both';
+    }
+    const btn = document.getElementById('tab-' + tab);
+    if (btn) btn.classList.add('active');
+    // Scroll dashboard into view
+    document.getElementById('dashboard').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  // Share Modal
+  function openShareModal() {
+    const m = document.getElementById('shareModal');
+    m.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+  function closeShareModal() {
+    const m = document.getElementById('shareModal');
+    m.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  // Countdown to World Toilet Day 2025
+  function updateCountdown() {
+    const target = new Date('2025-11-19T00:00:00+08:00');
+    const now = new Date();
+    const diff = target - now;
+    if (diff <= 0) {
+      document.getElementById('countdown').textContent = '今日是世界廁所日！';
+      return;
+    }
+    const days = Math.floor(diff / 86400000);
+    const hrs = Math.floor((diff % 86400000) / 3600000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+    document.getElementById('countdown').textContent = `${days}天 ${hrs}時 ${mins}分`;
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 60000);
+
+  // CSV download
+  function downloadCSV() {
+    const csv = `廁所ID,捐款者,金額(HKD),日期,項目,狀態
+TOILET#047,Jason Chan,500,2026-02-15,Village B 月供,完成
+TOILET#047,Jason Chan,500,2026-01-15,Village B 月供,完成
+TOILET#047,Jason Chan,500,2025-12-15,Village B 月供,完成
+TOILET#112,Jason Chan,100,2025-11-15,Siem Reap 拼團,完成
+TOILET#047,Jason Chan,500,2025-06-15,Village B 首次捐款,完成`;
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'ADOL_THE_WAY_Audit_Report.csv';
+    link.click();
+  }
+
+  // Pulse dot animation
+  const dot = document.getElementById('livedt');
+  if (dot) setInterval(() => {
+    dot.style.opacity = dot.style.opacity === '0' ? '1' : '0';
+  }, 800);
+</script>
+
 </body>
-
 </html>
