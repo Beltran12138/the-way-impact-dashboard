@@ -136,15 +136,6 @@
     .video-overlay.open { display: flex; }
 
     /* ── Guest Lock Overlay ── */
-    .lock-overlay {
-      position: absolute; inset: 0;
-      background: rgba(250,252,255,0.9);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      border-radius: 0; z-index: 10;
-    }
-
     /* ── TaaP Section ── */
     .taap-card { background: #fff; border-radius: 20px; border: 1px solid #e8f4fc; padding: 24px; transition: all 0.3s; }
     .taap-card:hover { border-color: var(--adol-blue); box-shadow: 0 12px 32px rgba(0,169,224,0.1); transform: translateY(-3px); }
@@ -172,6 +163,101 @@
       font-family: 'Poppins', sans-serif;
     }
     .toast.show { opacity: 1; }
+
+    /* ══════════════════════════════════════════════
+       MOBILE RESPONSIVE  (≤ 768px)
+    ══════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+
+      /* Nav */
+      .adol-nav > div { flex-wrap: wrap; gap: 12px; height: auto; padding: 12px 16px; }
+      .adol-nav a { font-size: 13px; }
+      .dropdown-content { min-width: 130px; }
+      .btn-donate { padding: 8px 16px; font-size: 13px; }
+      #navLoginBtn { display: none; } /* hide on mobile — login modal still shows on load */
+
+      /* Hero: stack 2 cols → 1 col */
+      section.hero-gradient > div { grid-template-columns: 1fr !important; gap: 32px !important; padding: 48px 16px 40px !important; }
+      section.hero-gradient h1 { font-size: clamp(40px, 12vw, 56px) !important; }
+      section.hero-gradient > div > div:last-child { display: none; } /* hide hero visual on mobile */
+      section.hero-gradient div[style*="display:flex;gap:16px"] { flex-direction: column; }
+      section.hero-gradient div[style*="display:flex;gap:32px"] { gap: 16px; flex-wrap: wrap; }
+
+      /* CaaS: 3 col → 1 col */
+      #caas > div > div[style*="grid-template-columns:repeat(3"] { grid-template-columns: 1fr !important; }
+      #caas .caas-card { margin-top: 0 !important; }
+
+      /* TaaP: 3 col → 1 col */
+      #taap > div > div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+      .taap-card img { max-height: 180px !important; }
+
+      /* Social challenge: flex wrap */
+      #social-challenge div[style*="display:flex;gap:24px"] { flex-direction: column !important; gap: 16px !important; }
+      #social-challenge div[style*="display:flex;gap:16px"] { flex-wrap: wrap; }
+      .step-pill { min-width: 0; }
+
+      /* Transparency: 3 col → 1 col */
+      #transparency div[style*="grid-template-columns:repeat(3"] { grid-template-columns: 1fr !important; }
+      #transparency div[style*="display:flex;align-items:center;gap:20px"] { flex-direction: column; text-align: center; }
+
+      /* Dashboard: sidebar stacks above content */
+      #dashRoot { flex-direction: column !important; }
+      .sidebar { width: 100% !important; border-right: none !important; border-bottom: 1px solid #e8f4fc; padding: 12px 8px !important; flex-direction: row !important; flex-wrap: nowrap; overflow-x: auto; }
+      .sidebar > div:first-child { flex-direction: row !important; gap: 6px; flex: unset; width: max-content; }
+      .sidebar-btn { padding: 8px 12px !important; font-size: 12px !important; border-radius: 10px !important; white-space: nowrap; }
+      .sidebar > div:last-child { display: none; } /* hide chapter progress on mobile */
+
+      /* Dashboard content padding */
+      #view-explore, #view-portfolio, #view-teamup, #view-rewards, #view-audit, #view-wallet { padding: 16px !important; }
+
+      /* Explore: project cards 3→1 */
+      #view-explore > div[style*="grid-template-columns:repeat(3"] { grid-template-columns: 1fr !important; }
+      .monopoly-cta { flex-direction: column; gap: 12px; text-align: center; }
+      .monopoly-cta a { width: 100%; text-align: center; }
+
+      /* Portfolio 2-col → 1 col */
+      #view-portfolio div[style*="grid-template-columns:repeat(2"] { grid-template-columns: 1fr !important; }
+      #view-portfolio div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
+
+      /* Audit: pie + transaction → stack */
+      #view-audit div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
+      #view-audit div[style*="display:grid;grid-template-columns:repeat(2"] { grid-template-columns: 1fr !important; }
+      /* Impact Markets panels */
+      #view-audit div[style*="grid-template-columns:1fr 1fr 1fr"] { grid-template-columns: 1fr !important; }
+      #klineCanvas { width: 100% !important; height: 200px !important; }
+
+      /* Wallet: 3 stat cards → 1 col */
+      #view-wallet div[style*="grid-template-columns:repeat(3"] { grid-template-columns: 1fr !important; }
+      .tx-row { grid-template-columns: 2fr 1fr !important; font-size: 11px; }
+
+      /* Rewards: 3 col → 2 col */
+      #view-rewards div[style*="grid-template-columns:repeat(3"] { grid-template-columns: repeat(2,1fr) !important; }
+
+      /* Teamup: grids */
+      #view-teamup div[style*="grid-template-columns:repeat(2"] { grid-template-columns: 1fr !important; }
+
+      /* Footer: 4 col → 2 col */
+      .adol-footer div[style*="grid-template-columns:2fr 1fr 1fr 1fr"] { grid-template-columns: 1fr 1fr !important; gap: 24px !important; }
+      .adol-footer div[style*="display:flex;justify-content:space-between"] { flex-direction: column; gap: 8px; text-align: center; }
+
+      /* Dashboard header */
+      #dashHeader { flex-wrap: wrap; gap: 8px; padding: 12px 16px !important; }
+      #dashHeader > div:first-child { min-width: 0; }
+
+      /* Pie chart: stack horizontally on mobile */
+      .pie-wrap { width: 120px !important; height: 120px !important; }
+      .pie-wrap svg { width: 120px !important; height: 120px !important; }
+    }
+
+    @media (max-width: 480px) {
+      /* Extra small: hero title smaller */
+      section.hero-gradient h1 { font-size: 36px !important; }
+      section.hero-gradient p { font-size: 15px !important; }
+      /* CaaS pricing number */
+      .caas-card div[style*="font-size:40px"] { font-size: 30px !important; }
+      /* Rewards: 2→1 col */
+      #view-rewards div[style*="grid-template-columns:repeat(2"] { grid-template-columns: 1fr !important; }
+    }
   </style>
 
 <!-- ════ GEO: JSON-LD Structured Data for AI / Generative Search ════ -->
@@ -372,7 +458,7 @@
 
     <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
       <a href="#" style="color:#6b7280;font-size:13px;font-weight:500;text-decoration:none;">English</a>
-      <button class="btn-login-nav" onclick="handleNavLogin()">登入 / 注冊</button>
+      <button id="navLoginBtn" class="btn-login-nav" onclick="handleNavLogin()">登入 / 注冊</button>
       <button class="btn-donate" onclick="document.getElementById('caas').scrollIntoView({behavior:'smooth'})">立即捐款</button>
     </div>
   </div>
@@ -798,7 +884,7 @@
 ════════════════════════════════════════════ -->
 <section id="dashboard" style="padding:0;background:var(--adol-bg);">
   <!-- Dashboard header bar -->
-  <div style="background:var(--adol-blue-dk);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;">
+  <div id="dashHeader" style="background:var(--adol-blue-dk);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;">
     <div>
       <div style="font-size:12px;color:rgba(255,255,255,0.6);font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">THE WAY · 影響力儀表板</div>
       <div style="font-size:20px;font-weight:800;color:#fff;">Toilet Impact Dashboard <span style="font-size:14px;font-weight:500;opacity:0.7;">powered by A Drop of Life</span></div>
@@ -944,16 +1030,7 @@
       </div>
 
       <!-- PORTFOLIO TAB -->
-      <div id="view-portfolio" style="padding:32px;display:none;position:relative;">
-        <!-- Guest lock overlay -->
-        <div id="lock-portfolio" class="lock-overlay" style="display:none;">
-          <div style="text-align:center;padding:40px;">
-            <div style="font-size:64px;margin-bottom:16px;">🔒</div>
-            <div style="font-size:20px;font-weight:800;color:#1d1c1c;margin-bottom:8px;">登入後查看完整個人數據</div>
-            <div style="font-size:14px;color:#6b7280;margin-bottom:24px;line-height:1.5;">訪客模式僅可瀏覽公開項目。<br/>登入後解鎖你的廁所進度與影響力數據。</div>
-            <button onclick="reopenLogin()" style="background:var(--adol-blue);color:#fff;border:none;border-radius:14px;padding:14px 32px;font-size:15px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif;">立即登入</button>
-          </div>
-        </div>
+      <div id="view-portfolio" style="padding:32px;display:none;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;">
           <div>
             <h2 id="portfolioGreet" style="font-size:26px;font-weight:800;color:#1d1c1c;margin-bottom:4px;">Hi Jason 👋</h2>
@@ -1117,16 +1194,7 @@
       </div>
 
       <!-- REWARDS TAB -->
-      <div id="view-rewards" style="padding:32px;display:none;position:relative;">
-        <!-- Guest lock overlay -->
-        <div id="lock-rewards" class="lock-overlay" style="display:none;">
-          <div style="text-align:center;padding:40px;">
-            <div style="font-size:64px;margin-bottom:16px;">🔒</div>
-            <div style="font-size:20px;font-weight:800;color:#1d1c1c;margin-bottom:8px;">登入後查看完整個人數據</div>
-            <div style="font-size:14px;color:#6b7280;margin-bottom:24px;line-height:1.5;">訪客模式僅可瀏覽公開項目。<br/>登入後解鎖你的廁所進度與影響力數據。</div>
-            <button onclick="reopenLogin()" style="background:var(--adol-blue);color:#fff;border:none;border-radius:14px;padding:14px 32px;font-size:15px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif;">立即登入</button>
-          </div>
-        </div>
+      <div id="view-rewards" style="padding:32px;display:none;">
         <h2 style="font-size:26px;font-weight:800;color:#1d1c1c;margin-bottom:8px;">業主禮遇</h2>
         <p style="color:#6b7280;margin-bottom:28px;font-size:14px;">記錄你的每一步改變，解鎖專屬業主徽章。</p>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
@@ -1346,16 +1414,7 @@
       </div>
 
       <!-- WALLET TAB -->
-      <div id="view-wallet" style="padding:32px;display:none;position:relative;">
-        <!-- Guest lock overlay -->
-        <div id="lock-wallet" class="lock-overlay" style="display:none;">
-          <div style="text-align:center;padding:40px;">
-            <div style="font-size:64px;margin-bottom:16px;">🔒</div>
-            <div style="font-size:20px;font-weight:800;color:#1d1c1c;margin-bottom:8px;">登入後查看完整個人數據</div>
-            <div style="font-size:14px;color:#6b7280;margin-bottom:24px;line-height:1.5;">訪客模式僅可瀏覽公開項目。<br/>登入後解鎖你的廁所進度與影響力數據。</div>
-            <button onclick="reopenLogin()" style="background:var(--adol-blue);color:#fff;border:none;border-radius:14px;padding:14px 32px;font-size:15px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif;">立即登入</button>
-          </div>
-        </div>
+      <div id="view-wallet" style="padding:32px;display:none;">
         <h2 style="font-size:26px;font-weight:800;color:#1d1c1c;margin-bottom:8px;">我的錢包</h2>
         <p style="color:#6b7280;margin-bottom:28px;font-size:14px;">查看你的所有捐款記錄與累計影響力數據。</p>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
@@ -1563,27 +1622,13 @@
     const greet = document.getElementById('portfolioGreet');
     const termOwner = document.getElementById('termOwner');
 
-    if (u.mode === 'guest') {
-      badge.textContent = '👤 訪客模式';
-      avatar.textContent = '?';
-      if (greet) greet.textContent = 'Hi 訪客 👋';
-      if (termOwner) termOwner.innerHTML = '<span style="color:#475569;">&gt; Owner</span> <span style="color:#94a3b8;">訪客模式</span>';
-      // Show lock overlays for restricted tabs
-      ['portfolio','rewards','wallet'].forEach(t => {
-        const lock = document.getElementById('lock-' + t);
-        if (lock) lock.style.display = 'flex';
-      });
-    } else {
-      const initials = u.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
-      badge.textContent = '👤 ' + u.name + ' · Member';
-      avatar.textContent = initials;
-      if (greet) greet.textContent = 'Hi ' + u.name + ' 👋';
-      if (termOwner) termOwner.innerHTML = '<span style="color:#475569;">&gt; Owner</span> <span style="color:#c084fc;">' + u.name + '</span>';
-      ['portfolio','rewards','wallet'].forEach(t => {
-        const lock = document.getElementById('lock-' + t);
-        if (lock) lock.style.display = 'none';
-      });
-    }
+    const isGuest = u.mode === 'guest';
+    const name = isGuest ? '訪客' : u.name;
+    const initials = isGuest ? '?' : u.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+    badge.textContent = isGuest ? '👤 訪客模式' : '👤 ' + u.name + ' · Member';
+    avatar.textContent = initials;
+    if (greet) greet.textContent = 'Hi ' + name + ' 👋';
+    if (termOwner) termOwner.innerHTML = '<span style="color:#475569;">&gt; Owner</span> <span style="color:#c084fc;">' + name + '</span>';
   }
 
   // On load: if already have session, skip modal
@@ -1600,10 +1645,6 @@
   let chartsInitialized = false;
 
   function showTab(tab) {
-    const raw = sessionStorage.getItem('twUser');
-    const isGuest = !raw || JSON.parse(raw).mode === 'guest';
-    const restricted = ['portfolio', 'rewards', 'wallet'];
-
     ['explore','portfolio','teamup','rewards','audit','wallet'].forEach(t => {
       document.getElementById('view-' + t).style.display = 'none';
       const btn = document.getElementById('tab-' + t);
