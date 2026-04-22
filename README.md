@@ -1,6 +1,15 @@
-# THE WAY × A Drop of Life — Impact Dashboard
+# THE WAY × ADOL — Impact Dashboard
 
-**Live Demo →** https://beltran12138.github.io/the-way-impact-dashboard/
+<div align="center">
+
+<!-- Replace with actual GIF: record 5s scrolling the dashboard, save as docs/demo.gif -->
+<!-- ![Dashboard Demo](docs/demo.gif) -->
+
+[![Live Demo](https://img.shields.io/badge/📊_Live_Demo-GitHub_Pages-00A9E0?style=for-the-badge)](https://beltran12138.github.io/the-way-impact-dashboard/)
+[![Monopoly Game](https://img.shields.io/badge/🎮_Monopoly_Game-Vercel-5EAB78?style=for-the-badge)](https://cambodia-toilet-monopoly.vercel.app)
+[![Campaign Overview](https://img.shields.io/badge/🗺_Campaign_Overview-the--way--campaign-FFD166?style=for-the-badge)](https://github.com/Beltran12138/the-way-campaign)
+
+</div>
 
 > A campaign microsite and donor impact dashboard for **THE WAY**, a World Toilet Day 2026 fundraising campaign by [A Drop of Life (ADOL)](https://adropoflife.org), produced as part of CUHK COMM3400B Integrated Marketing Communications.
 
