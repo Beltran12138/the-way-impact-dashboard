@@ -183,7 +183,8 @@
       section.hero-gradient div[style*="display:flex;gap:16px"] { flex-direction: column; }
       section.hero-gradient div[style*="display:flex;gap:32px"] { gap: 16px; flex-wrap: wrap; }
 
-      /* CaaS: 3 col → 1 col */
+      /* CaaS: 4 col → 1 col */
+      #caas > div > div[style*="grid-template-columns:repeat(4"] { grid-template-columns: 1fr !important; }
       #caas > div > div[style*="grid-template-columns:repeat(3"] { grid-template-columns: 1fr !important; }
       #caas .caas-card { margin-top: 0 !important; }
 
@@ -513,6 +514,10 @@
           <div style="font-size:28px;font-weight:800;color:var(--tw-sage);">$11/DALY</div>
           <div style="font-size:12px;color:#9ca3af;font-weight:500;">成本效益</div>
         </div>
+        <div>
+          <div style="font-size:28px;font-weight:800;color:#7B9FE8;">+31%</div>
+          <div style="font-size:12px;color:#9ca3af;font-weight:500;">女童出席率提升</div>
+        </div>
       </div>
     </div>
 
@@ -566,7 +571,7 @@
       </p>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:start;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;align-items:start;">
       <!-- Tier 1: Supporter -->
       <div class="caas-card">
         <div style="font-size:24px;margin-bottom:8px;">🌱</div>
@@ -665,6 +670,37 @@
           </ul>
         </div>
         <button class="tier-btn" style="background:var(--tw-coral);" onclick="document.getElementById('dashboard').scrollIntoView({behavior:'smooth'})">成為 Owner</button>
+      </div>
+
+      <!-- Tier 4: Class Guardian (Education) -->
+      <div class="caas-card" style="border:2px solid #7B9FE8;background:linear-gradient(135deg,#f0f4ff,#e8f0ff);">
+        <div style="font-size:24px;margin-bottom:8px;">🎓</div>
+        <div style="font-size:12px;font-weight:700;color:#4A6FD4;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Class Guardian</div>
+        <div style="font-size:40px;font-weight:800;color:#1d1c1c;margin-bottom:4px;">HK$800<span style="font-size:16px;font-weight:500;color:#9ca3af;">/月</span></div>
+        <div style="font-size:13px;color:#9ca3af;margin-bottom:4px;">企業CSR · 學校廁所專項</div>
+        <div style="font-size:11px;color:#4A6FD4;font-weight:600;margin-bottom:20px;">每年保全女童 60 個學習天</div>
+        <div style="border-top:1px solid #c8d8f0;padding-top:20px;">
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;">
+            <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#4b5563;">
+              <span style="width:20px;height:20px;background:#dce8ff;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#4A6FD4;font-size:12px;font-weight:700;flex-shrink:0;">✓</span>
+              學校廁所冠名（班級名牌）
+            </li>
+            <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#4b5563;">
+              <span style="width:20px;height:20px;background:#dce8ff;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#4A6FD4;font-size:12px;font-weight:700;flex-shrink:0;">✓</span>
+              年度女童出席率報告
+            </li>
+            <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#4b5563;">
+              <span style="width:20px;height:20px;background:#dce8ff;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#4A6FD4;font-size:12px;font-weight:700;flex-shrink:0;">✓</span>
+              企業CSR 影響力報告書
+            </li>
+            <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#4b5563;">
+              <span style="width:20px;height:20px;background:#dce8ff;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#4A6FD4;font-size:12px;font-weight:700;flex-shrink:0;">✓</span>
+              學校現場照片 + GPS 座標
+            </li>
+          </ul>
+        </div>
+        <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;">一座廁所 = 一個女童留在課室</div>
+        <button class="tier-btn" style="background:#4A6FD4;" onclick="document.getElementById('dashboard').scrollIntoView({behavior:'smooth'})">成為 Class Guardian</button>
       </div>
     </div>
 
@@ -1380,6 +1416,7 @@
               <span class="ticker-item"><span class="yellow">T-112 新項目 35%</span></span>
               <span class="ticker-item"><span class="blue">ADOL 164,600+ 設施</span></span>
               <span class="ticker-item"><span class="green">$11/DALY GiveWell評級</span></span>
+              <span class="ticker-item"><span style="color:#7B9FE8;font-weight:700;">🎓 女童出席率 +31%</span></span>
               <span class="ticker-item">捐款者 247人</span>
               <span class="ticker-item"><span class="yellow">T-203 建造中 62%</span></span>
               <span class="ticker-item"><span class="green">Siem Reap 月報出爐</span></span>
@@ -1393,6 +1430,7 @@
               <span class="ticker-item"><span class="yellow">T-112 新項目 35%</span></span>
               <span class="ticker-item"><span class="blue">ADOL 164,600+ 設施</span></span>
               <span class="ticker-item"><span class="green">$11/DALY GiveWell評級</span></span>
+              <span class="ticker-item"><span style="color:#7B9FE8;font-weight:700;">🎓 女童出席率 +31%</span></span>
               <span class="ticker-item">捐款者 247人</span>
               <span class="ticker-item"><span class="yellow">T-203 建造中 62%</span></span>
               <span class="ticker-item"><span class="green">Siem Reap 月報出爐</span></span>
